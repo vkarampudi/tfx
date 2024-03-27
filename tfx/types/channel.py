@@ -204,7 +204,7 @@ class BaseChannel(abc.ABC, Generic[_AT]):
     return self._with_input_trigger(TriggerByProperty(property_keys))
 
   def future(self) -> ChannelWrappedPlaceholder:
-    return ChannelWrappedPlaceholder(self)
+    raise NotImplementedError()
 
   def __eq__(self, other):
     return self is other
@@ -557,6 +557,9 @@ class OutputChannel(Channel):
   def set_as_async_channel(self) -> None:
     self._is_async = True
 
+  def future(self) -> ChannelWrappedPlaceholder:
+    return ChannelWrappedPlaceholder(self)
+
 
 @doc_controls.do_not_generate_docs
 class UnionChannel(BaseChannel):
@@ -703,6 +706,9 @@ class PipelineInputChannel(BaseChannel):
         'trigger_by_property is not implemented for PipelineInputChannel.'
     )
 
+  def future(self) -> ChannelWrappedPlaceholder:
+    return ChannelWrappedPlaceholder(self)
+
 
 class ExternalPipelineChannel(BaseChannel):
   """Channel subtype that is used to get artifacts from external MLMD db."""
@@ -787,7 +793,8 @@ class ChannelWrappedPlaceholder(artifact_placeholder.ArtifactPlaceholder):
     Args:
       key: The new key for the channel.
     """
-    self._key = key
+    del key  # unused.
+    return
 
   def __getitem__(self, index: int) -> ChannelWrappedPlaceholder:
     if self._index is not None:
