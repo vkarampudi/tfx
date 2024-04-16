@@ -15,7 +15,6 @@
 
 import os
 
-from absl.testing import parameterized
 import tensorflow as tf
 from tfx.dsl.component.experimental import placeholders
 from tfx.dsl.components.common import importer
@@ -30,18 +29,13 @@ _PIPELINE_NAME_PREFIX = 'aip-training-component-pipeline-{}'
 
 
 class AiPlatformTrainingComponentIntegrationTest(
-    base_test_case.BaseKubeflowV2Test, parameterized.TestCase
-):
+    base_test_case.BaseKubeflowV2Test):
   """Integration tests of AiPlatformTrainingComponent on managed pipeline."""
 
   _TEST_DATA_BUCKET = os.environ.get('CAIP_E2E_DATA_BUCKET')
   _TRAINING_IMAGE = os.environ.get('CAIP_TRAINING_COMPONENT_TEST_IMAGE')
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testSuccessfulExecution(self, use_pipeline_spec_2_1):
+  def testSuccessfulExecution(self):
     example_importer = importer.Importer(
         artifact_type=simple_artifacts.File,
         reimport=False,
@@ -73,9 +67,7 @@ class AiPlatformTrainingComponentIntegrationTest(
         components=[example_importer, train],
     )
 
-    self._run_pipeline(
-        aip_training_pipeline, use_pipeline_spec_2_1=use_pipeline_spec_2_1
-    )
+    self._run_pipeline(aip_training_pipeline)
 
 
 if __name__ == '__main__':

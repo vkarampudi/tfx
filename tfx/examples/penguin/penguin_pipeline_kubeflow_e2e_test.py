@@ -15,7 +15,6 @@
 
 import os
 
-from absl.testing import parameterized
 import tensorflow as tf
 from tfx.dsl.io import fileio
 from tfx.examples.penguin import penguin_pipeline_kubeflow
@@ -24,9 +23,8 @@ from tfx.orchestration.kubeflow.v2.e2e_tests import base_test_case
 from tfx.utils import io_utils
 
 
-class PenguinPipelineKubeflowV2Test(
-    base_test_case.BaseKubeflowV2Test, parameterized.TestCase
-):
+class PenguinPipelineKubeflowV2Test(base_test_case.BaseKubeflowV2Test):
+
   def setUp(self):
     super().setUp()
     penguin_examples_dir = os.path.join(self._REPO_BASE, 'tfx', 'examples',
@@ -43,11 +41,7 @@ class PenguinPipelineKubeflowV2Test(
     io_utils.copy_file(
         penguin_test_schema_file, self._penguin_schema_file, overwrite=True)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testEndToEndPipelineRun(self, use_pipeline_spec_2_1):
+  def testEndToEndPipelineRun(self):
     """E2E test for pipeline with runtime parameter."""
     pipeline_name = 'kubeflow-v2-e2e-test-{}'.format(self._test_id)
     kubeflow_pipeline = penguin_pipeline_kubeflow.create_pipeline(
@@ -72,11 +66,13 @@ class PenguinPipelineKubeflowV2Test(
     self._run_pipeline(
         pipeline=kubeflow_pipeline,
         parameter_values={
-            'train-args': '{"num_steps": 100}',
-            'eval-args': '{"num_steps": 50}',
-        },
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+            'train-args': {
+                'num_steps': 100
+            },
+            'eval-args': {
+                'num_steps': 50
+            }
+        })
     self.assertTrue(fileio.exists(self._serving_model_dir))
 
 

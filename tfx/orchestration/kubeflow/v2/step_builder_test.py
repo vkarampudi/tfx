@@ -15,7 +15,6 @@
 
 from typing import Any, Dict
 
-from absl.testing import parameterized
 from kfp.pipeline_spec import pipeline_spec_pb2 as pipeline_pb2
 import tensorflow as tf
 from tfx import components
@@ -40,18 +39,14 @@ from tfx.types import standard_artifacts
 _TEST_CMDS = ('python', '-m', 'my_entrypoint.app_module')
 
 
-class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
+class StepBuilderTest(tf.test.TestCase):
 
   def _sole(self, d: Dict[Any, Any]) -> Any:
     """Asserts the dictionary has length 1 and returns the only value."""
     self.assertLen(d, 1)
     return list(d.values())[0]
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildTask(self, use_pipeline_spec_2_1):
+  def testBuildTask(self):
     query = 'SELECT * FROM TABLE'
     bq_example_gen = big_query_example_gen_component.BigQueryExampleGen(
         query=query).with_platform_config(
@@ -65,42 +60,24 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         deployment_config=deployment_config,
         component_defs=component_defs,
         dsl_context_reg=dsl_context_registry.get(),
-        enable_cache=True,
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        enable_cache=True)
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_bq_example_gen_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_bq_example_gen_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_bq_example_gen_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildContainerTask(self, use_pipeline_spec_2_1):
+  def testBuildContainerTask(self):
     task = test_utils.DummyProducerComponent(
         output1=channel_utils.as_channel([standard_artifacts.Model()]),
         param1='value1',
@@ -112,42 +89,24 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         image='gcr.io/tensorflow/tfx:latest',  # Note this has no effect here.
         deployment_config=deployment_config,
         component_defs=component_defs,
-        dsl_context_reg=dsl_context_registry.get(),
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        dsl_context_reg=dsl_context_registry.get())
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_container_spec_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_container_spec_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_container_spec_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildContainerTask2(self, use_pipeline_spec_2_1):
+  def testBuildContainerTask2(self):
     task = test_utils.dummy_producer_component(
         output1=channel_utils.as_channel([standard_artifacts.Model()]),
         param1='value1',
@@ -159,9 +118,7 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         image='gcr.io/tensorflow/tfx:latest',
         deployment_config=deployment_config,
         component_defs=component_defs,
-        dsl_context_reg=dsl_context_registry.get(),
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        dsl_context_reg=dsl_context_registry.get())
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
@@ -169,33 +126,17 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_container_spec_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_container_spec_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_container_spec_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildFileBasedExampleGen(self, use_pipeline_spec_2_1):
+  def testBuildFileBasedExampleGen(self):
     example_gen = components.CsvExampleGen(
         input_base='path/to/data/root').with_beam_pipeline_args(
             ['--runner=DataflowRunner'])
@@ -207,42 +148,24 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         image_cmds=_TEST_CMDS,
         deployment_config=deployment_config,
         component_defs=component_defs,
-        dsl_context_reg=dsl_context_registry.get(),
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        dsl_context_reg=dsl_context_registry.get())
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_csv_example_gen_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_csv_example_gen_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_csv_example_gen_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildFileBasedExampleGenWithInputConfig(self, use_pipeline_spec_2_1):
+  def testBuildFileBasedExampleGenWithInputConfig(self):
     input_config = example_gen_pb2.Input(splits=[
         example_gen_pb2.Input.Split(name='train', pattern='*train.tfr'),
         example_gen_pb2.Input.Split(name='eval', pattern='*test.tfr')
@@ -256,42 +179,24 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         image='gcr.io/tensorflow/tfx:latest',
         deployment_config=deployment_config,
         component_defs=component_defs,
-        dsl_context_reg=dsl_context_registry.get(),
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        dsl_context_reg=dsl_context_registry.get())
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_import_example_gen_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_import_example_gen_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_import_example_gen_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildImporter(self, use_pipeline_spec_2_1):
+  def testBuildImporter(self):
     impt = importer.Importer(
         source_uri='m/y/u/r/i',
         properties={
@@ -308,42 +213,24 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         node=impt,
         deployment_config=deployment_config,
         component_defs=component_defs,
-        dsl_context_reg=dsl_context_registry.get(),
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        dsl_context_reg=dsl_context_registry.get())
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
-        test_utils.get_proto_from_test_data(
-            'expected_importer_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+        test_utils.get_proto_from_test_data('expected_importer_component.pbtxt',
+                                            pipeline_pb2.ComponentSpec()),
+        actual_component_def)
     self.assertProtoEquals(
-        test_utils.get_proto_from_test_data(
-            'expected_importer_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+        test_utils.get_proto_from_test_data('expected_importer_task.pbtxt',
+                                            pipeline_pb2.PipelineTaskSpec()),
+        actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_importer_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildImporterWithRuntimeParam(self, use_pipeline_spec_2_1):
+  def testBuildImporterWithRuntimeParam(self):
     param = data_types.RuntimeParameter(name='runtime_flag', ptype=str)
     impt = importer.Importer(
         source_uri=param,
@@ -355,45 +242,25 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
           node=impt,
           deployment_config=deployment_config,
           component_defs=component_defs,
-          dsl_context_reg=dsl_context_registry.get(),
-          use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-      )
+          dsl_context_reg=dsl_context_registry.get())
       actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_importer_component_with_runtime_param.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_importer_task_with_runtime_param.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_importer_executor_with_runtime_param.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
     self.assertListEqual([param], pc.parameters)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildDynamicExecutionPropertiesUpstreamComponentSpec(
-      self, use_pipeline_spec_2_1
-  ):
+  def testBuildDynamicExecutionPropertiesUpstreamComponentSpec(self):
     dynamic_exec_properties = {
         ('range_config_generator', 'range_config'): 'String'
     }
@@ -408,25 +275,15 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
             deployment_config=pipeline_pb2.PipelineDeploymentConfig(),
             dynamic_exec_properties=dynamic_exec_properties,
             dsl_context_reg=pipeline.dsl_context_registry,
-            use_pipeline_spec_2_1=use_pipeline_spec_2_1,
         ).build()
     )
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dynamic_execution_properties_upstream_component_spec.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        component_defs['range_config_generator'],
-    )
+            pipeline_pb2.ComponentSpec()),
+        component_defs['range_config_generator'])
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildDynamicExecutionPropertiesDownstreamComponentTask(
-      self, use_pipeline_spec_2_1
-  ):
+  def testBuildDynamicExecutionPropertiesDownstreamComponentTask(self):
     dynamic_exec_properties = {
         ('range_config_generator', 'range_config'): 'String'
     }
@@ -441,23 +298,14 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
             deployment_config=pipeline_pb2.PipelineDeploymentConfig(),
             dynamic_exec_properties=dynamic_exec_properties,
             dsl_context_reg=pipeline.dsl_context_registry,
-            use_pipeline_spec_2_1=use_pipeline_spec_2_1,
         ).build()
     )
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dynamic_execution_properties_downstream_component_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        example_gen_task_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), example_gen_task_spec)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testIllegalDynamicExecutionProperty(self, use_pipeline_spec_2_1):
+  def testIllegalDynamicExecutionProperty(self):
     dynamic_exec_properties = {
         ('range_config_generator', 'range_config'): 'String'
     }
@@ -474,14 +322,9 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
           deployment_config=pipeline_pb2.PipelineDeploymentConfig(),
           dynamic_exec_properties=dynamic_exec_properties,
           dsl_context_reg=pipeline.dsl_context_registry,
-          use_pipeline_spec_2_1=use_pipeline_spec_2_1,
       ).build()
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildLatestBlessedModelStrategySucceed(self, use_pipeline_spec_2_1):
+  def testBuildLatestBlessedModelStrategySucceed(self):
     latest_blessed_resolver = resolver.Resolver(
         strategy_class=latest_blessed_model_strategy.LatestBlessedModelStrategy,
         model=channel.Channel(type=standard_artifacts.Model),
@@ -497,9 +340,7 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         deployment_config=deployment_config,
         pipeline_info=test_pipeline_info,
         component_defs=component_defs,
-        dsl_context_reg=dsl_context_registry.get(),
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        dsl_context_reg=dsl_context_registry.get())
     actual_step_specs = my_builder.build()
 
     model_blessing_resolver_id = 'my_resolver2-model-blessing-resolver'
@@ -510,53 +351,32 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_latest_blessed_model_resolver_component_1.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        component_defs[model_blessing_resolver_id],
-    )
+            pipeline_pb2.ComponentSpec()),
+        component_defs[model_blessing_resolver_id])
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_latest_blessed_model_resolver_task_1.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_specs[model_blessing_resolver_id],
-    )
+            pipeline_pb2.PipelineTaskSpec()),
+        actual_step_specs[model_blessing_resolver_id])
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_latest_blessed_model_resolver_component_2.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        component_defs[model_resolver_id],
-    )
+            pipeline_pb2.ComponentSpec()), component_defs[model_resolver_id])
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_latest_blessed_model_resolver_task_2.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_specs[model_resolver_id],
-    )
+            pipeline_pb2.PipelineTaskSpec()),
+        actual_step_specs[model_resolver_id])
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_latest_blessed_model_resolver_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildLatestArtifactResolverSucceed(self, use_pipeline_spec_2_1):
+  def testBuildLatestArtifactResolverSucceed(self):
     latest_model_resolver = resolver.Resolver(
         strategy_class=latest_artifact_strategy.LatestArtifactStrategy,
         model=channel.Channel(type=standard_artifacts.Model),
@@ -571,42 +391,24 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         deployment_config=deployment_config,
         pipeline_info=test_pipeline_info,
         component_defs=component_defs,
-        dsl_context_reg=dsl_context_registry.get(),
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        dsl_context_reg=dsl_context_registry.get())
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_latest_artifact_resolver_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_latest_artifact_resolver_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_latest_artifact_resolver_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildDummyConsumerWithCondition(self, use_pipeline_spec_2_1):
+  def testBuildDummyConsumerWithCondition(self):
     producer_task_1 = test_utils.dummy_producer_component(
         output1=channel_utils.as_channel([standard_artifacts.Model()]),
         param1='value1',
@@ -644,42 +446,24 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         image='gcr.io/tensorflow/tfx:latest',
         deployment_config=deployment_config,
         component_defs=component_defs,
-        dsl_context_reg=pipeline.dsl_context_registry,
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        dsl_context_reg=pipeline.dsl_context_registry)
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_consumer_with_condition_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_consumer_with_condition_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_consumer_with_condition_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
-  def testBuildExitHandler(self, use_pipeline_spec_2_1):
+  def testBuildExitHandler(self):
     task = test_utils.dummy_producer_component(
         param1=decorators.FinalStatusStr('value1'))
     deployment_config = pipeline_pb2.PipelineDeploymentConfig()
@@ -690,36 +474,22 @@ class StepBuilderTest(tf.test.TestCase, parameterized.TestCase):
         deployment_config=deployment_config,
         component_defs=component_defs,
         dsl_context_reg=dsl_context_registry.get(),
-        is_exit_handler=True,
-        use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-    )
+        is_exit_handler=True)
     actual_step_spec = self._sole(my_builder.build())
     actual_component_def = self._sole(component_defs)
 
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_exit_handler_component.pbtxt',
-            pipeline_pb2.ComponentSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_component_def,
-    )
+            pipeline_pb2.ComponentSpec()), actual_component_def)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_exit_handler_task.pbtxt',
-            pipeline_pb2.PipelineTaskSpec(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        actual_step_spec,
-    )
+            pipeline_pb2.PipelineTaskSpec()), actual_step_spec)
     self.assertProtoEquals(
         test_utils.get_proto_from_test_data(
             'expected_dummy_exit_handler_executor.pbtxt',
-            pipeline_pb2.PipelineDeploymentConfig(),
-            use_legacy_data=not use_pipeline_spec_2_1,
-        ),
-        deployment_config,
-    )
+            pipeline_pb2.PipelineDeploymentConfig()), deployment_config)
 
 
 if __name__ == '__main__':

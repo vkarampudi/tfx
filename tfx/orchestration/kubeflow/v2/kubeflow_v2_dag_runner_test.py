@@ -19,7 +19,6 @@ import json
 import os
 from unittest import mock
 
-from absl.testing import parameterized
 import tensorflow as tf
 from tfx import version
 from tfx.dsl.components.base import base_component
@@ -37,7 +36,7 @@ _ILLEGALLY_NAMED_PIPELINE = tfx_pipeline.Pipeline(
     pipeline_name='ThisIsIllegal', pipeline_root='/some/path', components=[])
 
 
-class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
+class KubeflowV2DagRunnerTest(test_case_utils.TfxTest):
 
   def setUp(self):
     super().setUp()
@@ -48,20 +47,12 @@ class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
     self.enter_context(mock.patch('sys.version_info', new=VersionInfo(3, 7, 0)))
 
   def _compare_against_testdata(
-      self,
-      runner: kubeflow_v2_dag_runner.KubeflowV2DagRunner,
-      pipeline: tfx_pipeline.Pipeline,
-      golden_file: str,
-      use_legacy_data: bool = False,
-  ):
+      self, runner: kubeflow_v2_dag_runner.KubeflowV2DagRunner,
+      pipeline: tfx_pipeline.Pipeline, golden_file: str):
     """Compiles and compare the actual JSON output against a golden file."""
     actual_output = runner.run(pipeline=pipeline, write_out=True)
 
-    expected_json = json.loads(
-        test_utils.get_text_from_test_data(
-            golden_file, use_legacy_data=use_legacy_data
-        )
-    )
+    expected_json = json.loads(test_utils.get_text_from_test_data(golden_file))
     expected_json['pipelineSpec']['sdkVersion'] = 'tfx-{}'.format(
         version.__version__)
     if 'labels' in expected_json:
@@ -75,22 +66,15 @@ class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
 
     self.assertDictEqual(actual_json, expected_json)
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
   @mock.patch(
-      'tfx.orchestration.kubeflow.v2.kubeflow_v2_dag_runner._get_current_time'
-  )
-  def testCompileTwoStepPipeline(self, fake_now, use_pipeline_spec_2_1):
+      'tfx.orchestration.kubeflow.v2.kubeflow_v2_dag_runner._get_current_time')
+  def testCompileTwoStepPipeline(self, fake_now):
     fake_now.return_value = datetime.date(2020, 1, 1)
     runner = kubeflow_v2_dag_runner.KubeflowV2DagRunner(
         output_dir=_TEST_DIR,
         output_filename=_TEST_FILE_NAME,
         config=kubeflow_v2_dag_runner.KubeflowV2DagRunnerConfig(
-            display_name='my-pipeline',
-            default_image='gcr.io/my-tfx:latest',
-            use_pipeline_spec_2_1=use_pipeline_spec_2_1,
+            display_name='my-pipeline', default_image='gcr.io/my-tfx:latest'
         ),
     )
 
@@ -98,19 +82,12 @@ class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
         runner=runner,
         pipeline=test_utils.two_step_pipeline(),
         golden_file='expected_two_step_pipeline_job.json',
-        use_legacy_data=not (use_pipeline_spec_2_1),
     )
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
   @mock.patch(
       'tfx.orchestration.kubeflow.v2.kubeflow_v2_dag_runner._get_current_time'
   )
-  def testCompileTwoStepPipelineWithMultipleImages(
-      self, fake_now, use_pipeline_spec_2_1
-  ):
+  def testCompileTwoStepPipelineWithMultipleImages(self, fake_now):
     fake_now.return_value = datetime.date(2020, 1, 1)
     images = {
         kubeflow_v2_dag_runner._DEFAULT_IMAGE_PATH_KEY: 'gcr.io/my-tfx:latest',
@@ -120,9 +97,7 @@ class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
         output_dir=_TEST_DIR,
         output_filename=_TEST_FILE_NAME,
         config=kubeflow_v2_dag_runner.KubeflowV2DagRunnerConfig(
-            display_name='my-pipeline',
-            default_image=images,
-            use_pipeline_spec_2_1=use_pipeline_spec_2_1,
+            display_name='my-pipeline', default_image=images
         ),
     )
 
@@ -130,19 +105,14 @@ class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
         runner=runner,
         pipeline=test_utils.two_step_pipeline(),
         golden_file='expected_two_step_pipeline_job_with_multiple_images.json',
-        use_legacy_data=not use_pipeline_spec_2_1,
     )
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
   @mock.patch('tfx.version')
   @mock.patch(
       'tfx.orchestration.kubeflow.v2.kubeflow_v2_dag_runner._get_current_time'
   )
   def testCompileTwoStepPipelineWithoutDefaultImage(
-      self, fake_now, fake_tfx_version, use_pipeline_spec_2_1
+      self, fake_now, fake_tfx_version
   ):
     fake_now.return_value = datetime.date(2020, 1, 1)
     fake_tfx_version.__version__ = '1.13.0.dev'
@@ -153,9 +123,7 @@ class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
         output_dir=_TEST_DIR,
         output_filename=_TEST_FILE_NAME,
         config=kubeflow_v2_dag_runner.KubeflowV2DagRunnerConfig(
-            display_name='my-pipeline',
-            default_image=images,
-            use_pipeline_spec_2_1=use_pipeline_spec_2_1,
+            display_name='my-pipeline', default_image=images
         ),
     )
 
@@ -163,20 +131,13 @@ class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
         runner=runner,
         pipeline=test_utils.two_step_pipeline(),
         golden_file='expected_two_step_pipeline_job_without_default_image.json',
-        use_legacy_data=not use_pipeline_spec_2_1,
     )
 
-  @parameterized.named_parameters(
-      dict(testcase_name='use_pipeline_spec_2_1', use_pipeline_spec_2_1=True),
-      dict(testcase_name='use_pipeline_spec_2_0', use_pipeline_spec_2_1=False),
-  )
   @mock.patch.object(base_component.BaseComponent, '_resolve_pip_dependencies')
   @mock.patch(
       'tfx.orchestration.kubeflow.v2.kubeflow_v2_dag_runner._get_current_time'
   )
-  def testCompileFullTaxiPipeline(
-      self, fake_now, moke_resolve_dependencies, use_pipeline_spec_2_1
-  ):
+  def testCompileFullTaxiPipeline(self, fake_now, moke_resolve_dependencies):
     fake_now.return_value = datetime.date(2020, 1, 1)
     moke_resolve_dependencies.return_value = None
 
@@ -185,17 +146,12 @@ class KubeflowV2DagRunnerTest(test_case_utils.TfxTest, parameterized.TestCase):
         output_filename=_TEST_FILE_NAME,
         config=kubeflow_v2_dag_runner.KubeflowV2DagRunnerConfig(
             display_name='my-pipeline',
-            default_image='tensorflow/tfx:latest',
-            use_pipeline_spec_2_1=use_pipeline_spec_2_1,
-        ),
-    )
+            default_image='tensorflow/tfx:latest'))
 
     self._compare_against_testdata(
         runner=runner,
         pipeline=test_utils.full_taxi_pipeline(),
-        golden_file='expected_full_taxi_pipeline_job.json',
-        use_legacy_data=not use_pipeline_spec_2_1,
-    )
+        golden_file='expected_full_taxi_pipeline_job.json')
     moke_resolve_dependencies.assert_called()
 
 
