@@ -146,7 +146,8 @@ message PropertyPredicate {
       LT = 2;
     }
     // The name of the property.
-    string property_name = 1;
+    string property_name = 1 [deprecated = true];
+    repeated string property_names = 7;
     // The target value to compare with.
     Value target_value = 2;
     Op op = 3;
