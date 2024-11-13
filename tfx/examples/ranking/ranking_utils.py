@@ -14,10 +14,10 @@
 """Module file."""
 
 import tensorflow as tf
-import tensorflow_ranking as tfr
+# import tensorflow_ranking as tfr
 import tensorflow_transform as tft
-from tfx.examples.ranking import features
-from tfx.examples.ranking import struct2tensor_parsing_utils
+# from tfx.examples.ranking import features
+# from tfx.examples.ranking import struct2tensor_parsing_utils
 from tfx_bsl.public import tfxio
 
 
