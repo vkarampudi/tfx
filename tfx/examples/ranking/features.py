@@ -39,7 +39,7 @@ LIST_SIZE_FEATURE_NAME = 'example_list_size'
 def get_features():
   """Defines the context features and example features spec for parsing."""
 
-  context_features = [
+  """context_features = [
       struct2tensor_parsing_utils.Feature(QUERY_TOKENS, tf.string)
   ]
 
@@ -47,6 +47,6 @@ def get_features():
       struct2tensor_parsing_utils.Feature(DOCUMENT_TOKENS, tf.string)
   ]
 
-  label = struct2tensor_parsing_utils.Feature(LABEL, tf.int64)
+  label = struct2tensor_parsing_utils.Feature(LABEL, tf.int64)"""
 
-  return context_features, example_features, label
+  return None, None, None
