@@ -24,7 +24,7 @@ from google.protobuf import text_format
 from tensorflow_serving.apis import input_pb2
 
 try:
-  from tfx.examples.ranking import struct2tensor_parsing_utils  # pylint: disable=g-import-not-at-top
+ # from tfx.examples.ranking import struct2tensor_parsing_utils  # pylint: disable=g-import-not-at-top
 except ImportError:
   struct2tensor_parsing_utils = None
 
