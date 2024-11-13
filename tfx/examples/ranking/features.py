@@ -18,8 +18,8 @@ These names will be shared between the transform and the model.
 """
 
 import tensorflow as tf
-from tfx.examples.ranking import struct2tensor_parsing_utils
-
+# from tfx.examples.ranking import struct2tensor_parsing_utils
+ 
 # Labels are expected to be dense. In case of a batch of ELWCs have different
 # number of documents, the shape of the label is [N, D], where N is the batch
 # size, D is the maximum number of documents in the batch. If an ELWC in the
