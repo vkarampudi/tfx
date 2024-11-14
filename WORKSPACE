@@ -11,16 +11,6 @@ workspace(name = "tfx")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# Initialize TensorFlow's external dependencies.
-load("@org_tensorflow//tensorflow:workspace3.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace2.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace1.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace0.bzl", "workspace")
-workspace()
-
 # TF 1.15
 # LINT.IfChange(tf_commit)
 _TENSORFLOW_GIT_COMMIT = "810f233968cec850915324948bbbc338c97cf57f"
@@ -36,6 +26,16 @@ http_archive(
     ],
     strip_prefix = "tensorflow-%s" % _TENSORFLOW_GIT_COMMIT,
 )
+
+# Initialize TensorFlow's external dependencies.
+load("@org_tensorflow//tensorflow:workspace3.bzl", "workspace")
+workspace()
+load("@org_tensorflow//tensorflow:workspace2.bzl", "workspace")
+workspace()
+load("@org_tensorflow//tensorflow:workspace1.bzl", "workspace")
+workspace()
+load("@org_tensorflow//tensorflow:workspace0.bzl", "workspace")
+workspace()
 
 # Needed by tf_py_wrap_cc rule from Tensorflow.
 # When upgrading tensorflow version, also check tensorflow/WORKSPACE for the
