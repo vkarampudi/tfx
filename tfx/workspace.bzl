@@ -67,7 +67,7 @@ tfx_github_archive = repository_rule(
 
 def tfx_workspace():
     """All TFX external dependencies."""
-    tf_workspace(
+    workspace(
         path_prefix = "",
         tf_repo_name = "org_tensorflow",
     )
