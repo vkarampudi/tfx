@@ -13,6 +13,8 @@
 # limitations under the License.
 """TFX external dependencies that can be loaded in WORKSPACE files."""
 
+load("@org_tensorflow//tensorflow:workspace.bzl", "tf_workspace")
+
 # Initialize TensorFlow's external dependencies.
 load("@org_tensorflow//tensorflow:workspace3.bzl", "workspace")
 workspace()
@@ -77,7 +79,7 @@ tfx_github_archive = repository_rule(
 
 def tfx_workspace():
     """All TFX external dependencies."""
-    workspace(
+    tf_workspace(
         path_prefix = "",
         tf_repo_name = "org_tensorflow",
     )
