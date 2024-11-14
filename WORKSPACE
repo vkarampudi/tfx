@@ -11,6 +11,16 @@ workspace(name = "tfx")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# Initialize TensorFlow's external dependencies.
+load("@org_tensorflow//tensorflow:workspace3.bzl", "workspace")
+workspace()
+load("@org_tensorflow//tensorflow:workspace2.bzl", "workspace")
+workspace()
+load("@org_tensorflow//tensorflow:workspace1.bzl", "workspace")
+workspace()
+load("@org_tensorflow//tensorflow:workspace0.bzl", "workspace")
+workspace()
+
 # TF 1.15
 # LINT.IfChange(tf_commit)
 _TENSORFLOW_GIT_COMMIT = "810f233968cec850915324948bbbc338c97cf57f"
@@ -70,16 +80,6 @@ http_archive(
     sha256 = "492c3ac68ed9dcf527a07e6a1b2dcbf199c6bf8b35517951467ac32e421c06c1",
     urls = ["https://github.com/bazelbuild/rules_go/releases/download/0.17.0/rules_go-0.17.0.tar.gz"],
 )
-
-# Initialize TensorFlow's external dependencies.
-load("@org_tensorflow//tensorflow:workspace3.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace2.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace1.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace0.bzl", "workspace")
-workspace()
 
 # Please add all new TFX dependencies in workspace.bzl.
 load("//tfx:workspace.bzl", "tfx_workspace")
