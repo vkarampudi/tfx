@@ -23,8 +23,6 @@ from tfx_bsl.public import tfxio
 # from tfx.examples.ranking import features
 # from tfx.examples.ranking import struct2tensor_parsing_utils
 
-
-
 def make_decoder():
   """Creates a data decoder that that decodes ELWC records to tensors.
 
