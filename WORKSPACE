@@ -23,11 +23,11 @@ workspace()
 
 # TF 1.15
 # LINT.IfChange(tf_commit)
-_TENSORFLOW_GIT_COMMIT = "5bc9d26649cca274750ad3625bd93422617eed4b"
+_TENSORFLOW_GIT_COMMIT = "810f233968cec850915324948bbbc338c97cf57f"
 # LINT.ThenChange(:io_bazel_rules_clousure)
 http_archive(
     name = "org_tensorflow",
-    sha256 = "fe592915c85d1a89c20f3dd89db0772ee22a0fbda78e39aa46a778d638a96abc",
+    sha256 = "3b875c5121e752adc86578dc24747a220acfa2a7afa4026ff4172500b100854f",
     git_commit = "5bc9d26649cca274750ad3625bd93422617eed4b",
     urls = [
       # Bazel mirror disabled due to b/162781348.
