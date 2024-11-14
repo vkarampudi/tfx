@@ -14,11 +14,15 @@
 """Module file."""
 
 import tensorflow as tf
-# import tensorflow_ranking as tfr
 import tensorflow_transform as tft
+from tfx_bsl.public import tfxio
+
+# This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.
+
+# import tensorflow_ranking as tfr
 # from tfx.examples.ranking import features
 # from tfx.examples.ranking import struct2tensor_parsing_utils
-from tfx_bsl.public import tfxio
+
 
 
 def make_decoder():
