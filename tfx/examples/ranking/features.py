@@ -17,7 +17,7 @@
 These names will be shared between the transform and the model.
 """
 
-import tensorflow as tf
+"""import tensorflow as tf
 from tfx.examples.ranking import struct2tensor_parsing_utils
 
 # Labels are expected to be dense. In case of a batch of ELWCs have different
@@ -49,4 +49,4 @@ def get_features():
 
   label = struct2tensor_parsing_utils.Feature(LABEL, tf.int64)
 
-  return context_features, example_features, label
+  return context_features, example_features, label"""
