@@ -13,7 +13,7 @@
 # limitations under the License.
 """tf.ranking example pipeline."""
 
-import os
+"""import os
 from typing import List
 
 import absl
@@ -183,4 +183,4 @@ if __name__ == '__main__':
           module_file=_module_file,
           metadata_path=_metadata_path,
           serving_model_dir=_serving_model_dir,
-          beam_pipeline_args=_beam_pipeline_args))
+          beam_pipeline_args=_beam_pipeline_args))"""
