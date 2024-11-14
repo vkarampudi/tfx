@@ -78,13 +78,3 @@ tfx_workspace()
 # Specify the minimum required bazel version.
 load("@bazel_skylib//lib:versions.bzl", "versions")
 versions.check("6.4.0")
-
-# Initialize TensorFlow's external dependencies.
-load("@org_tensorflow//tensorflow:workspace3.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace2.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace1.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace0.bzl", "workspace")
-workspace()
