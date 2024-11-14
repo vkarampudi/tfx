@@ -13,16 +13,6 @@
 # limitations under the License.
 """TFX external dependencies that can be loaded in WORKSPACE files."""
 
-# Initialize TensorFlow's external dependencies.
-load("@org_tensorflow//tensorflow:workspace3.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace2.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace1.bzl", "workspace")
-workspace()
-load("@org_tensorflow//tensorflow:workspace0.bzl", "workspace")
-workspace()
-
 def _github_archive_url(org, repo, ref):
     return "https://github.com/{0}/{1}/archive/{2}.zip".format(org, repo, ref)
 
@@ -87,7 +77,7 @@ def tfx_workspace():
         name = "com_github_google_ml_metadata",
         repo = "google/ml-metadata",
         # LINT.IfChange
-        tag = "v1.15.0",
+        tag = "v1.16.0",
         # LINT.ThenChange(//tfx/dependencies.py)
     )
 
@@ -97,6 +87,6 @@ def tfx_workspace():
         repo = "tensorflow/metadata",
         # LINT.IfChange
         # Keep in sync with TFDV version (TFDV requires TFMD).
-        tag = "v1.15.0",
+        tag = "v1.16.1",
         # LINT.ThenChange(//tfx/dependencies.py)
     )
