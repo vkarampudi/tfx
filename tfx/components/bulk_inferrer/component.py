@@ -25,6 +25,7 @@ from tfx.types import standard_artifacts
 from tfx.types import standard_component_specs
 
 
+@pytest.fixture
 class BulkInferrer(base_beam_component.BaseBeamComponent):
   """A TFX component to do batch inference on a model with unlabelled examples.
 
