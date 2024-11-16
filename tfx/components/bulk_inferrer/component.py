@@ -23,6 +23,7 @@ from tfx.orchestration import data_types
 from tfx.proto import bulk_inferrer_pb2
 from tfx.types import standard_artifacts
 from tfx.types import standard_component_specs
+import pytest
 
 
 @pytest.fixture
