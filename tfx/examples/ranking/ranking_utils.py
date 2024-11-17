@@ -42,7 +42,7 @@ def make_decoder():"""
 
 
 def preprocessing_fn(inputs):
-  """Transform preprocessing_fn."""
+  # Transform preprocessing_fn.
 
   # generate a shared vocabulary.
   _ = tft.vocabulary(
@@ -56,7 +56,7 @@ def preprocessing_fn(inputs):
 
 
 def run_fn(trainer_fn_args):
-  """TFX trainer entry point."""
+  # TFX trainer entry point.
 
   tf_transform_output = tft.TFTransformOutput(trainer_fn_args.transform_output)
   hparams = dict(
@@ -111,7 +111,7 @@ def run_fn(trainer_fn_args):
 def _input_fn(file_patterns,
               data_accessor,
               batch_size) -> tf.data.Dataset:
-  """Returns a dataset of decoded tensors."""
+  # Returns a dataset of decoded tensors.
 
   def prepare_label(parsed_ragged_tensors):
     label = parsed_ragged_tensors.pop(features.LABEL)
@@ -129,7 +129,7 @@ def _input_fn(file_patterns,
 
 def _preprocess_keras_inputs(context_keras_inputs, example_keras_inputs,
                              tf_transform_output, hparams):
-  """Preprocesses the inputs, including vocab lookup and embedding."""
+  # Preprocesses the inputs, including vocab lookup and embedding.
   lookup_layer = tf.keras.layers.experimental.preprocessing.StringLookup(
       max_tokens=(
           tf_transform_output.vocabulary_size_by_name('shared_vocab') + 1),
@@ -170,7 +170,7 @@ def _preprocess_keras_inputs(context_keras_inputs, example_keras_inputs,
 
 
 def _create_ranking_model(tf_transform_output, hparams) -> tf.keras.Model:
-  """Creates a Keras ranking model."""
+  # Creates a Keras ranking model.
   context_feature_specs, example_feature_specs, _ = features.get_features()
   context_keras_inputs, example_keras_inputs = (
       struct2tensor_parsing_utils.create_keras_inputs(
