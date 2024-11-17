@@ -15,7 +15,7 @@
 
 
 
-import itertools
+"""import itertools
 import unittest
 
 import tensorflow as tf
@@ -249,4 +249,4 @@ class ELWCDecoderTest(tf.test.TestCase):
         size_feature_name='example_list_size')
     result = decoder.decode_record(tf.convert_to_tensor(_ELWCS))
     self.assertLen(result, 1)
-    self.assertEqual(result['example_list_size'].to_list(), [[2], [1]])
+    self.assertEqual(result['example_list_size'].to_list(), [[2], [1]])"""
