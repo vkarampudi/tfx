@@ -18,7 +18,7 @@ import tempfile
 from absl.testing import parameterized
 import tensorflow_data_validation as tfdv
 from tensorflow_data_validation.skew import feature_skew_detector
-from tfx.components.example_diff import executor
+from components.example_diff import executor
 from tfx.dsl.io import fileio
 from tfx.proto import example_diff_pb2
 from tfx.types import artifact_utils
