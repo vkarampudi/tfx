@@ -37,14 +37,14 @@ _TYPE_LIST_MAP = {
 
 
 # Parsing config for a feature in ELWCs.
-class Feature:
+class Feature:"""
   """Parsing config for a feature in ELWCs."""
 
-  def __init__(self,
+  """def __init__(self,
                name: str,
                dtype: tf.DType,
                default_value: Optional[Union[int, float, str]] = None,
-               length: Optional[int] = None):
+               length: Optional[int] = None):"""
     """Initializer.
 
     Args:
@@ -60,7 +60,7 @@ class Feature:
       length: The length of the feature. If specified, must also specify
         `default_value`.
     """
-    self.name = name
+    """self.name = name
     self.dtype = dtype
     self.default_value = default_value
     self.length = length
@@ -80,10 +80,10 @@ class Feature:
                   'dtype' % (name, type(default_value)))
 
 
-class ELWCDecoder(tfxio.TFGraphRecordDecoder):
+class ELWCDecoder(tfxio.TFGraphRecordDecoder):"""
   """A TFGraphRecordDecoder that decodes ExampleListWithContext proto."""
 
-  def __init__(self,
+  """def __init__(self,
                name: str,
                context_features: List[Feature],
                example_features: List[Feature],
@@ -127,9 +127,9 @@ class ELWCDecoder(tfxio.TFGraphRecordDecoder):
 
 def create_keras_inputs(context_features,
                         example_features,
-                        size_feature_name=None):
+                        size_feature_name=None):"""
   """Create Keras input layers."""
-  context_keras_inputs, example_keras_inputs = {}, {}
+  """context_keras_inputs, example_keras_inputs = {}, {}
   # Create Keras inputs for context features.
   for feature in context_features:
     context_keras_inputs[feature.name] = tf.keras.Input(
@@ -150,7 +150,7 @@ def parse_elwc_with_struct2tensor(
     records: tf.Tensor,
     context_features: List[Feature],
     example_features: List[Feature],
-    size_feature_name: Optional[str] = None) -> Dict[str, tf.RaggedTensor]:
+    size_feature_name: Optional[str] = None) -> Dict[str, tf.RaggedTensor]:"""
   """Parses a batch of ELWC records into RaggedTensors using struct2tensor.
 
   Args:
@@ -167,7 +167,7 @@ def parse_elwc_with_struct2tensor(
 
   """
 
-  def get_step_name(feature_name: str):
+ """def get_step_name(feature_name: str):"""
     """Gets the name of the step (a component in a prensor Path) for a feature.
 
     A prensor step cannot contain dots ("."), but a feature name can.
@@ -177,7 +177,7 @@ def parse_elwc_with_struct2tensor(
     Returns:
       a valid step name.
     """
-    return feature_name.replace('.', '_dot_')
+    """return feature_name.replace('.', '_dot_')
 
   def get_default_filled_step_name(feature_name: str):
     return get_step_name(feature_name) + _DEFAULT_VALUE_SUFFIX
@@ -282,7 +282,7 @@ def parse_elwc_with_struct2tensor(
   return result
 
 
-def make_ragged_densify_layer():
+def make_ragged_densify_layer():"""
   """Creates a keras layer that densifies a RaggedTensor.
 
   The layer takes a RaggedTensor as input and outputs a dense tensor.
@@ -295,4 +295,4 @@ def make_ragged_densify_layer():
   Returns:
     A Keras Layer.
   """
-  return tf.keras.layers.Lambda(lambda x: x.to_tensor())"""
+ """return tf.keras.layers.Lambda(lambda x: x.to_tensor())"""
