@@ -13,7 +13,7 @@
 # limitations under the License.
 """Utils using struct2tensor to parse ELWC."""
 
-import itertools
+"""import itertools
 from typing import Dict, List, Optional, Union
 
 from struct2tensor import calculate
@@ -295,4 +295,4 @@ def make_ragged_densify_layer():
   Returns:
     A Keras Layer.
   """
-  return tf.keras.layers.Lambda(lambda x: x.to_tensor())
+  return tf.keras.layers.Lambda(lambda x: x.to_tensor())"""
