@@ -54,7 +54,7 @@ class RankingPipelineTest(tf.test.TestCase):
     print('TFX ROOT: ', self._tfx_root)
 
   def assertExecutedOnce(self, component) -> None:
-    """Check the component is executed exactly once."""
+    # check the component is executed exactly once.
     component_path = os.path.join(self._pipeline_root, component)
     self.assertTrue(tf.io.gfile.exists(component_path))
     outputs = tf.io.gfile.listdir(component_path)
