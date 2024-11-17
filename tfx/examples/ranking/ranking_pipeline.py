@@ -72,7 +72,7 @@ _beam_pipeline_args = [
 def _create_pipeline(pipeline_name: str, pipeline_root: str, data_root: str,
                      module_file: str, serving_model_dir: str,
                      metadata_path: str, beam_pipeline_args: List[str]):
-  """Creates pipeline."""
+  # Creates pipeline.
   pipeline_root = os.path.join(pipeline_root, 'pipelines', pipeline_name)
 
   example_gen = ImportExampleGen(
