@@ -31,7 +31,7 @@ def make_decoder():"""
   Returns:
     A ELWC decoder.
   """
-  context_features, example_features, label_feature = features.get_features()
+  """context_features, example_features, label_feature = features.get_features()
 
   return struct2tensor_parsing_utils.ELWCDecoder(
       name='ELWCDecoder',
