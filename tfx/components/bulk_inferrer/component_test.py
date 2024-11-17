@@ -20,10 +20,8 @@ from tfx.proto import bulk_inferrer_pb2
 from tfx.types import channel_utils
 from tfx.types import standard_artifacts
 from tfx.types import standard_component_specs
-import pytest
 
 
-@pytest.fixture
 class ComponentTest(tf.test.TestCase):
 
   def setUp(self):
