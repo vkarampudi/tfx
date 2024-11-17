@@ -32,7 +32,7 @@ except ImportError:
 _ELWCS = [
     text_format.Parse(
         """
-context {
+"""context {
   features {
     feature {
       key: "ctx.int"  # dot in the feature name is intended.
@@ -109,8 +109,11 @@ examples {
     }
   }
 }
+"""
 """, input_pb2.ExampleListWithContext()).SerializeToString(),
     text_format.Parse("""
+      
+      """
 context {
   features {
     feature {
@@ -166,7 +169,7 @@ examples {
       }
     }
   }
-}
+}"""
 """, input_pb2.ExampleListWithContext()).SerializeToString()
 ]
 
