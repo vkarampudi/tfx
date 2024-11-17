@@ -13,7 +13,7 @@
 # limitations under the License.
 """Module file."""
 
-import tensorflow as tf
+"""import tensorflow as tf
 import tensorflow_ranking as tfr
 import tensorflow_transform as tft
 from tfx.examples.ranking import features
@@ -254,4 +254,4 @@ def _create_ranking_model(tf_transform_output, hparams) -> tf.keras.Model:
           learning_rate=hparams['learning_rate']),
       loss=tfr.keras.losses.get(hparams['loss']),
       metrics=tfr.keras.metrics.default_keras_metrics())
-  return model
+  return model"""
