@@ -188,5 +188,11 @@ class ExecutorTest(tf.test.TestCase, parameterized.TestCase):
         fileio.exists(os.path.join(eval_output.uri, 'eval_config.json')))
     self.assertNotEmpty(glob.glob(f'{eval_output.uri}/metrics-*.tfrecord'))
     self.assertNotEmpty(glob.glob(f'{eval_output.uri}/plots-*.tfrecord'))
-    self.assertFalse(
+    self.assertTrue(
+        fileio.exists(os.path.join(eval_output.uri, 'validations.tfrecord')))
+    if blessed:
+      self.assertTrue(
           fileio.exists(os.path.join(blessing_output.uri, 'BLESSED')))
+    else:
+      self.assertTrue(
+          fileio.exists(os.path.join(blessing_output.uri, 'NOT_BLESSED')))
