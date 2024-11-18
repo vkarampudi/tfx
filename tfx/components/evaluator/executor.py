@@ -19,9 +19,8 @@ from typing import Any, Dict, List
 from absl import logging
 import apache_beam as beam
 import tensorflow_model_analysis as tfma
-# Need to import the following module so that the fairness indicator post-export
-# metric is registered.
-import tensorflow_model_analysis.addons.fairness.post_export_metrics.fairness_indicators  # pylint: disable=unused-import
+# The addons API is based on the estimator, we no longer supporting any estimator related APIs, So removing TFMA addons and post_export_metrics.
+# import tensorflow_model_analysis.addons.fairness.post_export_metrics.fairness_indicators  # pylint: disable=unused-import
 from tfx import types
 from tfx.components.evaluator import constants
 from tfx.components.util import udf_utils
@@ -101,17 +100,8 @@ class Executor(base_beam_executor.BaseBeamExecutor):
           (len(input_dict[standard_component_specs.BASELINE_MODEL_KEY])))
 
     self._log_startup(input_dict, output_dict, exec_properties)
-
-    # Add fairness indicator metric callback if necessary.
-    fairness_indicator_thresholds = json_utils.loads(
-        exec_properties.get(
-            standard_component_specs.FAIRNESS_INDICATOR_THRESHOLDS_KEY, 'null'))
+           
     add_metrics_callbacks = None
-    if fairness_indicator_thresholds:
-      add_metrics_callbacks = [
-          tfma.post_export_metrics.fairness_indicators(  # pytype: disable=module-attr
-              thresholds=fairness_indicator_thresholds),
-      ]
 
     output_uri = artifact_utils.get_single_uri(
         output_dict[constants.EVALUATION_KEY])
