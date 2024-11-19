@@ -53,7 +53,7 @@ jobs:
         SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
         INIT_DIR="${SITE_PACKAGES}/tensorflow_model_analysis"
 
-        echo "checking for __pycache__ in: $(INIT_DIR)"
+        echo "checking for __pycache__ in: ${INIT_DIR}"
 
         if [ -d "${INIT_DIR}/__pycache__" ]; then
           echo "clearing cache for __init__.py in ${INIT_DIR}/__pycache__"
