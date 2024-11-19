@@ -59,7 +59,12 @@ jobs:
 
       env:
         TFX_DEPENDENCY_SELECTOR: ${{ matrix.dependency-selector }}
-
+        
+    - name: Remove addons import from tensorflow_model_anlysis/__init__.py 
+      run: |
+        FILE=(python -c "import tensorflow_model_analysis as tfma; print(tfma.__file__)")
+        sed -i '/^from tensorflow_model_analysis import addons/d' "${FILE%/__init__.py}/__init__.py
+        
     - name: Run unit tests
       shell: bash
       run: |
