@@ -48,16 +48,19 @@ jobs:
         # Share repository cache between workflows.
         repository-cache: true
 
-    - name: Clear Python cache
+    - name: Clear tfma __init__.py cache
       run: |
         SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
         INIT_DIR="${SITE_PACKAGES}/tensorflow_model_analysis"
 
+        echo "checking for __pycache__ in: $(INIT_DIR)"
+
         if [ -d "${INIT_DIR}/__pycache__" ]; then
-          rm -rf "${INIT_DIR}/__pycache__"
-          echo "cleared cache in ${INIT_DIR}/__pycache__"
+          echo "clearing cache for __init__.py in ${INIT_DIR}/__pycache__"
+          rm -f "${INIT_DIR}/__pycache__/__init__.py"*.pyc
+          echo "Removed cache files for __init__.py"
         else
-          echo "No cache directory found in ${INIT_DIR}"
+          echo "No __pycache__ directory found in ${INIT_DIR}"
         fi          
 
     - name: Install dependencies
@@ -77,6 +80,8 @@ jobs:
         SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
         INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
 
+        echo "Modifying file at: $INIT_FILE"
+
         if [ -f "$INIT_FILE" ]; then
           sed -i '/^from tensorflow_model_analysis import addons/d' "$INIT_FILE"
           echo "Removed 'from tensorflow_model_analysis import addons' from $INIT_FILE"
@@ -88,8 +93,10 @@ jobs:
       run: |
         SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
         INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
-        echo "contents of ${INIT_FILE}:"
-        grep "addons" "$INIT_FILE" || echo "No 'addons' imports found."
+
+        echo "verifying file at: ${INIT_FILE}"
+        echo "contents of $(INIT_FILE):" 
+        cat "${INIT_FILE}"
         
     - name: Run unit tests
       shell: bash
