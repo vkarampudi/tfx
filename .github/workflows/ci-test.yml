@@ -74,13 +74,21 @@ jobs:
           echo "File $INIT_FILE not found. skipping"
         fi
 
+    - name: Debug afer modifying __init__.py
+      run: |
+        SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
+        INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
+
+        echo "After modification, contents of ${INIT_FILE}"
+        cat "${INIT_FILE}"
+
     - name: Verify __init__.py modification
       run: |
         SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
         INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
 
         echo "verifying file at: ${INIT_FILE}"
-        echo "contents of $(INIT_FILE):" 
+        echo "contents of ${INIT_FILE}:" 
         cat "${INIT_FILE}"
         
     - name: Run unit tests
