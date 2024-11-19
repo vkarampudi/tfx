@@ -60,12 +60,12 @@ jobs:
       env:
         TFX_DEPENDENCY_SELECTOR: ${{ matrix.dependency-selector }}
         
-    - name: Remove addons import from tensorflow_model_anlaysis/__init__.py 
+    - name: Remove addons import from tensorflow_model_analysis/__init__.py 
       run: |
         SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
         INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
 
-        if[ -f "$INIT_FILE" ]; then
+        if [ -f "$INIT_FILE" ]; then
           sed -i '/^from tensorflow_model_analysis import addons/d' "$INIT_FILE"
           echo "Removed 'from tensorflow_model_analysis import addons' from $INIT_FILE"
         else
