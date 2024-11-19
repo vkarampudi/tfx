@@ -83,6 +83,13 @@ jobs:
         else
           echo "File $INIT_FILE not found. skipping"
         fi
+
+    - name: Verify __init__.py modification
+      run: |
+        SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
+        INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
+        echo "contents of ${INIT_FILE}:"
+        grep "addons" "$INIT_FILE" || echo "No 'addons' imports found."
         
     - name: Run unit tests
       shell: bash
