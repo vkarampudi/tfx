@@ -62,8 +62,16 @@ jobs:
         
     - name: Remove addons import from tensorflow_model_anlaysis/__init__.py 
       run: |
-        FILE=(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")/tensorflow_model_analysis/__init__.py
-        sed -i '/^from tensorflow_model_analysis import addons/d' "$FILE"
+        SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
+        INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
+
+        if[ -f "$INIT_FILE" ]; then
+          sed -i '/^from tensorflow_model_analysis import addons/d' "$INIT_FILE"
+          echo "Removed 'from tensorflow_model_analysis import addons' from $INIT_FILE"
+        else
+          echo "File $INIT_FILE not found. skipping"
+        fi
+        
     - name: Run unit tests
       shell: bash
       run: |
