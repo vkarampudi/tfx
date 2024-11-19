@@ -48,6 +48,18 @@ jobs:
         # Share repository cache between workflows.
         repository-cache: true
 
+    - name: Clear Python cache
+      run: |
+        SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
+        INIT_DIR="${SITE_PACKAGES}/tensorflow_model_analysis"
+
+        if [ -d "${INIT_DIR}/__pycache__" ]; then
+          rm -rf "${INIT_DIR}/__pycache__"
+          echo "cleared cache in ${INIT_DIR}/__pycache__"
+        else
+          echo "No cache directory found in ${INIT_DIR}"
+        fi          
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip wheel
@@ -59,18 +71,6 @@ jobs:
 
       env:
         TFX_DEPENDENCY_SELECTOR: ${{ matrix.dependency-selector }}
-        
-    - name: Clear Python cache
-      run: |
-        SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
-        INIT_DIR="${SITE_PACKAGES}/tensorflow_model_analysis"
-
-        if [ -d "${INIT_DIR}/__pycache__" ]; then
-          rm -rf "${INIT_DIR}/__pycache__"
-          echo "cleared cache in ${INIT_DIR}/__pycache__"
-        else
-          echo "No cache directory found in ${INIT_DIR}"
-        fi  
           
     - name: Remove addons import from tensorflow_model_analysis/__init__.py 
       run: |
