@@ -109,10 +109,10 @@
   #    })
 
 
-def _input_fn(file_patterns,
-              data_accessor,
-              batch_size) -> tf.data.Dataset:
-  """Returns a dataset of decoded tensors."""
+ #def _input_fn(file_patterns,
+ #             data_accessor,
+ #             batch_size) -> tf.data.Dataset:
+ # """Returns a dataset of decoded tensors."""
 
   #def prepare_label(parsed_ragged_tensors):
   #  label = parsed_ragged_tensors.pop(features.LABEL)
