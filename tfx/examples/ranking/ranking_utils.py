@@ -56,27 +56,27 @@ def make_decoder():
 #  return inputs
 
 
-def run_fn(trainer_fn_args):
-  """TFX trainer entry point."""
+#def run_fn(trainer_fn_args):
+#  """TFX trainer entry point."""
 
-  tf_transform_output = tft.TFTransformOutput(trainer_fn_args.transform_output)
-  hparams = dict(
-      batch_size=32,
-      embedding_dimension=20,
-      learning_rate=0.05,
-      dropout_rate=0.8,
-      hidden_layer_dims=[64, 32, 16],
-      loss='approx_ndcg_loss',
-      use_batch_norm=True,
-      batch_norm_moment=0.99
-  )
+#  tf_transform_output = tft.TFTransformOutput(trainer_fn_args.transform_output)
+#  hparams = dict(
+#      batch_size=32,
+#      embedding_dimension=20,
+#      learning_rate=0.05,
+#      dropout_rate=0.8,
+#      hidden_layer_dims=[64, 32, 16],
+#      loss='approx_ndcg_loss',
+#      use_batch_norm=True,
+#      batch_norm_moment=0.99
+#  )
 
-  train_dataset = _input_fn(trainer_fn_args.train_files,
-                            trainer_fn_args.data_accessor,
-                            hparams['batch_size'])
-  eval_dataset = _input_fn(trainer_fn_args.eval_files,
-                           trainer_fn_args.data_accessor,
-                           hparams['batch_size'])
+#  train_dataset = _input_fn(trainer_fn_args.train_files,
+#                            trainer_fn_args.data_accessor,
+#                            hparams['batch_size'])
+#  eval_dataset = _input_fn(trainer_fn_args.eval_files,
+#                           trainer_fn_args.data_accessor,
+#                           hparams['batch_size'])
 
   #model = _create_ranking_model(tf_transform_output, hparams)
   #model.summary()
