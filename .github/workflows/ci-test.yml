@@ -46,7 +46,7 @@ jobs:
         # Store build cache per workflow.
         disk-cache: ${{ github.workflow }}-${{ hashFiles('.github/workflows/ci-test.yml') }}
         # Share repository cache between workflows.
-        repository-cache: true         
+        repository-cache: true
 
     - name: Install dependencies
       run: |
@@ -59,38 +59,7 @@ jobs:
 
       env:
         TFX_DEPENDENCY_SELECTOR: ${{ matrix.dependency-selector }}
-          
-    - name: Remove addons import from tensorflow_model_analysis/__init__.py 
-      run: |
-        SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
-        INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
 
-        echo "Modifying file at: $INIT_FILE"
-
-        if [ -f "$INIT_FILE" ]; then
-          sed -i '/^from tensorflow_model_analysis import addons/d' "$INIT_FILE"
-          echo "Removed 'from tensorflow_model_analysis import addons' from $INIT_FILE"
-        else
-          echo "File $INIT_FILE not found. skipping"
-        fi
-
-    - name: Debug afer modifying __init__.py
-      run: |
-        SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
-        INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
-
-        echo "After modification, contents of ${INIT_FILE}"
-        cat "${INIT_FILE}"
-
-    - name: Verify __init__.py modification
-      run: |
-        SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])")
-        INIT_FILE="${SITE_PACKAGES}/tensorflow_model_analysis/__init__.py"
-
-        echo "verifying file at: ${INIT_FILE}"
-        echo "contents of ${INIT_FILE}:" 
-        cat "${INIT_FILE}"
-        
     - name: Run unit tests
       shell: bash
       run: |
