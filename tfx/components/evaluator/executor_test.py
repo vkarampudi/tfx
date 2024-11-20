@@ -16,6 +16,7 @@
 
 import glob
 import os
+import pytest
 
 from absl import logging
 from absl.testing import parameterized
@@ -147,6 +148,7 @@ class ExecutorTest(tf.test.TestCase, parameterized.TestCase):
                       column_for_slicing=['trip_start_day', 'trip_miles']),
               ])),
   }))
+  @pytest.mark.xfail(run=False, reason="EvalSavedModel is deprecated.")
   def testDoLegacySingleEvalSavedModelWFairness(self, exec_properties):
     source_data_dir = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), 'testdata')
@@ -164,6 +166,165 @@ class ExecutorTest(tf.test.TestCase, parameterized.TestCase):
         standard_component_specs.EXAMPLES_KEY: [examples],
         standard_component_specs.MODEL_KEY: [model],
     }
+
+    # Create output dict.
+    eval_output = standard_artifacts.ModelEvaluation()
+    eval_output.uri = os.path.join(output_data_dir, 'eval_output')
+    blessing_output = standard_artifacts.ModelBlessing()
+    blessing_output.uri = os.path.join(output_data_dir, 'blessing_output')
+    output_dict = {
+        standard_component_specs.EVALUATION_KEY: [eval_output],
+        standard_component_specs.BLESSING_KEY: [blessing_output],
+    }
+
+    try:
+      # Need to import the following module so that the fairness indicator
+      # post-export metric is registered.  This may raise an ImportError if the
+      # currently-installed version of TFMA does not support fairness
+      # indicators.
+      import tensorflow_model_analysis.addons.fairness.post_export_metrics.fairness_indicators  # noqa: F401
+      exec_properties[
+          standard_component_specs
+          .FAIRNESS_INDICATOR_THRESHOLDS_KEY] = '[0.1, 0.3, 0.5, 0.7, 0.9]'
+    except ImportError:
+      logging.warning(
+          'Not testing fairness indicators because a compatible TFMA version '
+          'is not installed.')
+
+    # List needs to be serialized before being passed into Do function.
+    exec_properties[
+        standard_component_specs.EXAMPLE_SPLITS_KEY] = json_utils.dumps(None)
+
+    # Run executor.
+    evaluator = executor.Executor()
+    evaluator.Do(input_dict, output_dict, exec_properties)
+
+    # Check evaluator outputs.
+    self.assertTrue(
+        fileio.exists(os.path.join(eval_output.uri, 'eval_config.json')))
+    self.assertNotEmpty(glob.glob(f'{eval_output.uri}/metrics-*.tfrecord'))
+    self.assertNotEmpty(glob.glob(f'{eval_output.uri}/plots-*.tfrecord'))
+    self.assertFalse(
+        fileio.exists(os.path.join(blessing_output.uri, 'BLESSED')))
+
+  @parameterized.named_parameters(
+      (
+          'eval_config_w_validation',
+          {
+              standard_component_specs.EVAL_CONFIG_KEY:
+                  proto_utils.proto_to_json(
+                      tfma.EvalConfig(
+                          model_specs=[
+                              tfma.ModelSpec(label_key='tips'),
+                          ],
+                          metrics_specs=[
+                              tfma.MetricsSpec(metrics=[
+                                  tfma.MetricConfig(
+                                      class_name='ExampleCount',
+                                      # Count > 0, OK.
+                                      threshold=tfma.MetricThreshold(
+                                          value_threshold=tfma
+                                          .GenericValueThreshold(
+                                              lower_bound={'value': 0}))),
+                              ]),
+                          ],
+                          slicing_specs=[tfma.SlicingSpec()]))
+          },
+          True,
+          True),
+      (
+          'eval_config_w_validation_fail',
+          {
+              standard_component_specs.EVAL_CONFIG_KEY:
+                  proto_utils.proto_to_json(
+                      tfma.EvalConfig(
+                          model_specs=[
+                              tfma.ModelSpec(
+                                  name='baseline1',
+                                  label_key='tips',
+                                  is_baseline=True),
+                              tfma.ModelSpec(
+                                  name='candidate1', label_key='tips'),
+                          ],
+                          metrics_specs=[
+                              tfma.MetricsSpec(metrics=[
+                                  tfma.MetricConfig(
+                                      class_name='ExampleCount',
+                                      # Count < -1, NOT OK.
+                                      threshold=tfma.MetricThreshold(
+                                          value_threshold=tfma
+                                          .GenericValueThreshold(
+                                              upper_bound={'value': -1}))),
+                              ]),
+                          ],
+                          slicing_specs=[tfma.SlicingSpec()]))
+          },
+          False,
+          True),
+      (
+          'no_baseline_model_ignore_change_threshold_validation_pass',
+          {
+              standard_component_specs.EVAL_CONFIG_KEY:
+                  proto_utils.proto_to_json(
+                      tfma.EvalConfig(
+                          model_specs=[
+                              tfma.ModelSpec(
+                                  name='baseline',
+                                  label_key='tips',
+                                  is_baseline=True),
+                              tfma.ModelSpec(
+                                  name='candidate', label_key='tips'),
+                          ],
+                          metrics_specs=[
+                              tfma.MetricsSpec(metrics=[
+                                  tfma.MetricConfig(
+                                      class_name='ExampleCount',
+                                      # Count > 0, OK.
+                                      threshold=tfma.MetricThreshold(
+                                          value_threshold=tfma
+                                          .GenericValueThreshold(
+                                              lower_bound={'value': 0}))),
+                                  tfma.MetricConfig(
+                                      class_name='Accuracy',
+                                      # Should be ignored due to no baseline.
+                                      threshold=tfma.MetricThreshold(
+                                          change_threshold=tfma
+                                          .GenericChangeThreshold(
+                                              relative={'value': 0},
+                                              direction=tfma.MetricDirection
+                                              .LOWER_IS_BETTER))),
+                              ]),
+                          ],
+                          slicing_specs=[tfma.SlicingSpec()]))
+          },
+          True,
+          False))
+  def testDoValidation(self, exec_properties, blessed, has_baseline):
+    source_data_dir = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), 'testdata')
+    output_data_dir = os.path.join(
+        os.environ.get('TEST_UNDECLARED_OUTPUTS_DIR', self.get_temp_dir()),
+        self._testMethodName)
+
+    # Create input dict.
+    examples = standard_artifacts.Examples()
+    examples.uri = os.path.join(source_data_dir, 'csv_example_gen')
+    examples.split_names = artifact_utils.encode_split_names(['train', 'eval'])
+    model = standard_artifacts.Model()
+    baseline_model = standard_artifacts.Model()
+    model.uri = os.path.join(source_data_dir, 'trainer/current')
+    baseline_model.uri = os.path.join(source_data_dir, 'trainer/previous/')
+    blessing_output = standard_artifacts.ModelBlessing()
+    blessing_output.uri = os.path.join(output_data_dir, 'blessing_output')
+    schema = standard_artifacts.Schema()
+    schema.uri = os.path.join(source_data_dir, 'schema_gen')
+    input_dict = {
+        standard_component_specs.EXAMPLES_KEY: [examples, examples],
+        standard_component_specs.MODEL_KEY: [model],
+        standard_component_specs.SCHEMA_KEY: [schema],
+    }
+    if has_baseline:
+      input_dict[standard_component_specs.BASELINE_MODEL_KEY] = [baseline_model]
 
     # Create output dict.
     eval_output = standard_artifacts.ModelEvaluation()
