@@ -249,4 +249,4 @@ class ELWCDecoderTest(tf.test.TestCase):
   #  result = decoder.decode_record(tf.convert_to_tensor(_ELWCS))
   #  self.assertLen(result, 1)
   #  self.assertEqual(result['example_list_size'].to_list(), [[2], [1]])
-     pass  
+     pass
