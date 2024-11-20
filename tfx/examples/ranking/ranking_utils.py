@@ -23,15 +23,15 @@
 
 
 #def make_decoder():
-  """Creates a data decoder that that decodes ELWC records to tensors.
+#  """Creates a data decoder that that decodes ELWC records to tensors.
 
-  A DataView (see "TfGraphDataViewProvider" component in the pipeline)
-  will refer to this decoder. And any components that consumes the data
-  with the DataView applied will use this decoder.
+#  A DataView (see "TfGraphDataViewProvider" component in the pipeline)
+#  will refer to this decoder. And any components that consumes the data
+#  with the DataView applied will use this decoder.
 
-  Returns:
-    A ELWC decoder.
-  """
+#  Returns:
+#    A ELWC decoder.
+#  """
   # context_features, example_features, label_feature = features.get_features()
 
   #return struct2tensor_parsing_utils.ELWCDecoder(
