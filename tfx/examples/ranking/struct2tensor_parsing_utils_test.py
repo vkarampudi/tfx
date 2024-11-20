@@ -17,6 +17,7 @@
 
 import itertools
 import unittest
+import pytest
 
 import tensorflow as tf
 
@@ -208,7 +209,6 @@ class ELWCDecoderTest(tf.test.TestCase):
   #  }
   #  self.assertEqual({k: v.to_list() for k, v in result.items()}, expected)
      pass
-   
   def testDefaultFilling(self):
   #  context_features = [
   #      struct2tensor_parsing_utils.Feature('ctx.bytes', tf.string,
@@ -234,7 +234,6 @@ class ELWCDecoderTest(tf.test.TestCase):
   #  }
   #  self.assertEqual({k: v.to_list() for k, v in result.items()}, expected)
      pass
-   
   def testLabelFeature(self):
   #  decoder = struct2tensor_parsing_utils.ELWCDecoder(
   #      'test_decoder', [], [],
@@ -246,7 +245,6 @@ class ELWCDecoderTest(tf.test.TestCase):
   #  self.assertLen(result, 1)
   #  self.assertEqual(result['example_int'].to_list(), [[11.0, 22.0], [33.0]])
      pass
-   
   def testSizeFeature(self):
   #  decoder = struct2tensor_parsing_utils.ELWCDecoder(
   #      'test_decoder', [], [],
