@@ -11,18 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Module file."""
+#"""Module file."""
 
-import tensorflow as tf
+#import tensorflow as tf
 # This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.
 # import tensorflow_ranking as tfr
-import tensorflow_transform as tft
+#import tensorflow_transform as tft
 # from tfx.examples.ranking import features
 # from tfx.examples.ranking import struct2tensor_parsing_utils
-from tfx_bsl.public import tfxio
+#from tfx_bsl.public import tfxio
 
 
-def make_decoder():
+#def make_decoder():
   """Creates a data decoder that that decodes ELWC records to tensors.
 
   A DataView (see "TfGraphDataViewProvider" component in the pipeline)
@@ -114,60 +114,60 @@ def _input_fn(file_patterns,
               batch_size) -> tf.data.Dataset:
   """Returns a dataset of decoded tensors."""
 
-  def prepare_label(parsed_ragged_tensors):
-    label = parsed_ragged_tensors.pop(features.LABEL)
+  #def prepare_label(parsed_ragged_tensors):
+  #  label = parsed_ragged_tensors.pop(features.LABEL)
     # Convert labels to a dense tensor.
-    label = label.to_tensor(default_value=features.LABEL_PADDING_VALUE)
-    return parsed_ragged_tensors, label
+ #   label = label.to_tensor(default_value=features.LABEL_PADDING_VALUE)
+ #   return parsed_ragged_tensors, label
 
   # NOTE: this dataset already contains RaggedTensors from the Decoder.
-  dataset = data_accessor.tf_dataset_factory(
-      file_patterns,
-      tfxio.TensorFlowDatasetOptions(batch_size=batch_size),
-      schema=None)
-  return dataset.map(prepare_label).repeat()
+ # dataset = data_accessor.tf_dataset_factory(
+ #     file_patterns,
+ #     tfxio.TensorFlowDatasetOptions(batch_size=batch_size),
+ #     schema=None)
+ # return dataset.map(prepare_label).repeat()
 
 
-def _preprocess_keras_inputs(context_keras_inputs, example_keras_inputs,
-                             tf_transform_output, hparams):
-  """Preprocesses the inputs, including vocab lookup and embedding."""
-  lookup_layer = tf.keras.layers.experimental.preprocessing.StringLookup(
-      max_tokens=(
-          tf_transform_output.vocabulary_size_by_name('shared_vocab') + 1),
-      vocabulary=tf_transform_output.vocabulary_file_by_name('shared_vocab'),
-      num_oov_indices=1,
-      oov_token='[UNK#]',
-      mask_token=None)
-  embedding_layer = tf.keras.layers.Embedding(
-      input_dim=(
-          tf_transform_output.vocabulary_size_by_name('shared_vocab') + 1),
-      output_dim=hparams['embedding_dimension'],
-      embeddings_initializer=None,
-      embeddings_constraint=None)
-  def embedding(input_tensor):
+#def _preprocess_keras_inputs(context_keras_inputs, example_keras_inputs,
+#                             tf_transform_output, hparams):
+#  """Preprocesses the inputs, including vocab lookup and embedding."""
+#  lookup_layer = tf.keras.layers.experimental.preprocessing.StringLookup(
+#      max_tokens=(
+#          tf_transform_output.vocabulary_size_by_name('shared_vocab') + 1),
+#      vocabulary=tf_transform_output.vocabulary_file_by_name('shared_vocab'),
+#      num_oov_indices=1,
+#      oov_token='[UNK#]',
+#      mask_token=None)
+#  embedding_layer = tf.keras.layers.Embedding(
+#      input_dim=(
+#          tf_transform_output.vocabulary_size_by_name('shared_vocab') + 1),
+#      output_dim=hparams['embedding_dimension'],
+#      embeddings_initializer=None,
+#      embeddings_constraint=None)
+  #def embedding(input_tensor):
     # TODO(b/158673891): Support weighted features.
-    embedded_tensor = embedding_layer(lookup_layer(input_tensor))
-    mean_embedding = tf.reduce_mean(embedded_tensor, axis=-2)
+  #  embedded_tensor = embedding_layer(lookup_layer(input_tensor))
+  #  mean_embedding = tf.reduce_mean(embedded_tensor, axis=-2)
     # mean_embedding could be a dense tensor (context feature) or a ragged
     # tensor (example feature). if it's ragged, we densify it first.
-    if isinstance(mean_embedding.type_spec, tf.RaggedTensorSpec):
-      return struct2tensor_parsing_utils.make_ragged_densify_layer()(
-          mean_embedding)
-    return mean_embedding
-  preprocessed_context_features, preprocessed_example_features = {}, {}
-  context_features, example_features, _ = features.get_features()
-  for feature in context_features:
-    preprocessed_context_features[feature.name] = embedding(
-        context_keras_inputs[feature.name])
-  for feature in example_features:
-    preprocessed_example_features[feature.name] = embedding(
-        example_keras_inputs[feature.name])
-  list_size = struct2tensor_parsing_utils.make_ragged_densify_layer()(
-      context_keras_inputs[features.LIST_SIZE_FEATURE_NAME])
-  list_size = tf.reshape(list_size, [-1])
-  mask = tf.sequence_mask(list_size)
+  #  if isinstance(mean_embedding.type_spec, tf.RaggedTensorSpec):
+  #    return struct2tensor_parsing_utils.make_ragged_densify_layer()(
+  #        mean_embedding)
+  #  return mean_embedding
+  #preprocessed_context_features, preprocessed_example_features = {}, {}
+  #context_features, example_features, _ = features.get_features()
+  #for feature in context_features:
+  #  preprocessed_context_features[feature.name] = embedding(
+  #      context_keras_inputs[feature.name])
+  #for feature in example_features:
+  #  preprocessed_example_features[feature.name] = embedding(
+  #      example_keras_inputs[feature.name])
+  #list_size = struct2tensor_parsing_utils.make_ragged_densify_layer()(
+  #    context_keras_inputs[features.LIST_SIZE_FEATURE_NAME])
+  #list_size = tf.reshape(list_size, [-1])
+  #mask = tf.sequence_mask(list_size)
 
-  return preprocessed_context_features, preprocessed_example_features, mask
+  #return preprocessed_context_features, preprocessed_example_features, mask
 
 
 #def _create_ranking_model(tf_transform_output, hparams) -> tf.keras.Model:
