@@ -16,8 +16,8 @@ import os
 import unittest
 
 import tensorflow as tf
-from tfx.orchestration import metadata
-from tfx.orchestration.beam.beam_dag_runner import BeamDagRunner
+# from tfx.orchestration import metadata
+# from tfx.orchestration.beam.beam_dag_runner import BeamDagRunner
 
 # This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.
 # from tfx.examples.ranking import ranking_pipeline
