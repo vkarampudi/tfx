@@ -100,9 +100,8 @@ class Executor(base_beam_executor.BaseBeamExecutor):
           (len(input_dict[standard_component_specs.BASELINE_MODEL_KEY])))
 
     self._log_startup(input_dict, output_dict, exec_properties)
-           
-    add_metrics_callbacks = None
 
+           
     output_uri = artifact_utils.get_single_uri(
         output_dict[constants.EVALUATION_KEY])
 
@@ -186,7 +185,7 @@ class Executor(base_beam_executor.BaseBeamExecutor):
                 eval_saved_model_path=model_path,
                 model_name=model_spec.name,
                 eval_config=eval_config,
-                add_metrics_callbacks=add_metrics_callbacks))
+                add_metrics_callbacks=None))
     else:
       eval_config = None
       assert (standard_component_specs.FEATURE_SLICING_SPEC_KEY
@@ -209,7 +208,7 @@ class Executor(base_beam_executor.BaseBeamExecutor):
               eval_saved_model_path=model_path,
               model_name='',
               eval_config=None,
-              add_metrics_callbacks=add_metrics_callbacks))
+              add_metrics_callbacks=None))
 
     eval_shared_model = models[0] if len(models) == 1 else models
     schema = None
