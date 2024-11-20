@@ -14,14 +14,13 @@
 """Module file."""
 
 import tensorflow as tf
-import tensorflow_transform as tft
-from tfx_bsl.public import tfxio
-
 # This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.
-
 # import tensorflow_ranking as tfr
+import tensorflow_transform as tft
 # from tfx.examples.ranking import features
 # from tfx.examples.ranking import struct2tensor_parsing_utils
+from tfx_bsl.public import tfxio
+
 
 def make_decoder():
   """Creates a data decoder that that decodes ELWC records to tensors.
@@ -33,14 +32,14 @@ def make_decoder():
   Returns:
     A ELWC decoder.
   """
-  context_features, example_features, label_feature = features.get_features()
+  # context_features, example_features, label_feature = features.get_features()
 
-  return struct2tensor_parsing_utils.ELWCDecoder(
-      name='ELWCDecoder',
-      context_features=context_features,
-      example_features=example_features,
-      size_feature_name=features.LIST_SIZE_FEATURE_NAME,
-      label_feature=label_feature)
+  #return struct2tensor_parsing_utils.ELWCDecoder(
+  #    name='ELWCDecoder',
+  #    context_features=context_features,
+  #    example_features=example_features,
+  #    size_feature_name=features.LIST_SIZE_FEATURE_NAME,
+  #    label_feature=label_feature)
 
 
 def preprocessing_fn(inputs):
@@ -79,35 +78,35 @@ def run_fn(trainer_fn_args):
                            trainer_fn_args.data_accessor,
                            hparams['batch_size'])
 
-  model = _create_ranking_model(tf_transform_output, hparams)
-  model.summary()
-  log_dir = trainer_fn_args.model_run_dir
+  #model = _create_ranking_model(tf_transform_output, hparams)
+  #model.summary()
+  #log_dir = trainer_fn_args.model_run_dir
   # Write logs to path
-  tensorboard_callback = tf.keras.callbacks.TensorBoard(
-      log_dir=log_dir, update_freq='epoch')
-  model.fit(
-      train_dataset,
-      steps_per_epoch=trainer_fn_args.train_steps,
-      validation_data=eval_dataset,
-      validation_steps=trainer_fn_args.eval_steps,
-      callbacks=[tensorboard_callback])
+  #tensorboard_callback = tf.keras.callbacks.TensorBoard(
+  #    log_dir=log_dir, update_freq='epoch')
+  #model.fit(
+  #    train_dataset,
+  #    steps_per_epoch=trainer_fn_args.train_steps,
+  #    validation_data=eval_dataset,
+  #    validation_steps=trainer_fn_args.eval_steps,
+  #    callbacks=[tensorboard_callback])
 
   # TODO(zhuo): Add support for Regress signature.
-  @tf.function(input_signature=[tf.TensorSpec([None], tf.string)],
-               autograph=False)
-  def predict_serving_fn(serialized_elwc_records):
-    decode_fn = trainer_fn_args.data_accessor.data_view_decode_fn
-    decoded = decode_fn(serialized_elwc_records)
-    decoded.pop(features.LABEL)
-    return {tf.saved_model.PREDICT_OUTPUTS: model(decoded)}
+  #@tf.function(input_signature=[tf.TensorSpec([None], tf.string)],
+  #             autograph=False)
+  #def predict_serving_fn(serialized_elwc_records):
+  #  decode_fn = trainer_fn_args.data_accessor.data_view_decode_fn
+  #  decoded = decode_fn(serialized_elwc_records)
+  #  decoded.pop(features.LABEL)
+  #  return {tf.saved_model.PREDICT_OUTPUTS: model(decoded)}
 
-  model.save(
-      trainer_fn_args.serving_model_dir,
-      save_format='tf',
-      signatures={
-          'serving_default':
-              predict_serving_fn.get_concrete_function(),
-      })
+  #model.save(
+  #    trainer_fn_args.serving_model_dir,
+  #    save_format='tf',
+  #    signatures={
+  #        'serving_default':
+  #            predict_serving_fn.get_concrete_function(),
+  #    })
 
 
 def _input_fn(file_patterns,
@@ -171,89 +170,89 @@ def _preprocess_keras_inputs(context_keras_inputs, example_keras_inputs,
   return preprocessed_context_features, preprocessed_example_features, mask
 
 
-def _create_ranking_model(tf_transform_output, hparams) -> tf.keras.Model:
-  """Creates a Keras ranking model."""
-  context_feature_specs, example_feature_specs, _ = features.get_features()
-  context_keras_inputs, example_keras_inputs = (
-      struct2tensor_parsing_utils.create_keras_inputs(
-          context_feature_specs, example_feature_specs,
-          features.LIST_SIZE_FEATURE_NAME))
-  context_features, example_features, mask = _preprocess_keras_inputs(
-      context_keras_inputs, example_keras_inputs, tf_transform_output, hparams)
+#def _create_ranking_model(tf_transform_output, hparams) -> tf.keras.Model:
+#  """Creates a Keras ranking model."""
+#  context_feature_specs, example_feature_specs, _ = features.get_features()
+#  context_keras_inputs, example_keras_inputs = (
+#      struct2tensor_parsing_utils.create_keras_inputs(
+#          context_feature_specs, example_feature_specs,
+#          features.LIST_SIZE_FEATURE_NAME))
+#  context_features, example_features, mask = _preprocess_keras_inputs(
+#      context_keras_inputs, example_keras_inputs, tf_transform_output, hparams)
 
   # Since argspec inspection is expensive, for keras layer,
   # layer_obj._call_spec.arg_names is a property that uses cached argspec for
   # call. We use this to determine whether the layer expects `inputs` as first
   # argument.
   # TODO(b/185176464): update tfr dependency to remove this branch.
-  flatten_list = tfr.keras.layers.FlattenList()
+  #flatten_list = tfr.keras.layers.FlattenList()
 
   # TODO(kathywu): remove the except branch once changes to the call function
   # args in the Keras Layer have been released.
-  try:
-    first_arg_name = flatten_list._call_spec.arg_names[0]  # pylint: disable=protected-access
-  except AttributeError:
-    first_arg_name = flatten_list._call_fn_args[0]  # pylint: disable=protected-access
-  if first_arg_name == 'inputs':
-    (flattened_context_features, flattened_example_features) = flatten_list(
-        inputs=(context_features, example_features, mask))
-  else:
-    (flattened_context_features,
-     flattened_example_features) = flatten_list(context_features,
-                                                example_features, mask)
+# try:
+#    first_arg_name = flatten_list._call_spec.arg_names[0]  # pylint: disable=protected-access
+#  except AttributeError:
+#    first_arg_name = flatten_list._call_fn_args[0]  # pylint: disable=protected-access
+#  if first_arg_name == 'inputs':
+#    (flattened_context_features, flattened_example_features) = flatten_list(
+#        inputs=(context_features, example_features, mask))
+#  else:
+#    (flattened_context_features,
+#     flattened_example_features) = flatten_list(context_features,
+#                                                example_features, mask)
 
   # Concatenate flattened context and example features along `list_size` dim.
-  context_input = [
-      tf.keras.layers.Flatten()(flattened_context_features[name])
-      for name in sorted(flattened_context_features)
-  ]
-  example_input = [
-      tf.keras.layers.Flatten()(flattened_example_features[name])
-      for name in sorted(flattened_example_features)
-  ]
-  input_layer = tf.concat(context_input + example_input, 1)
-  dnn = tf.keras.Sequential()
-  if hparams['use_batch_norm']:
-    dnn.add(
-        tf.keras.layers.BatchNormalization(
-            momentum=hparams['batch_norm_moment']))
-  for layer_size in hparams['hidden_layer_dims']:
-    dnn.add(tf.keras.layers.Dense(units=layer_size))
-    if hparams['use_batch_norm']:
-      dnn.add(tf.keras.layers.BatchNormalization(
-          momentum=hparams['batch_norm_moment']))
-    dnn.add(tf.keras.layers.Activation(activation=tf.nn.relu))
-    dnn.add(tf.keras.layers.Dropout(rate=hparams['dropout_rate']))
+#  context_input = [
+#      tf.keras.layers.Flatten()(flattened_context_features[name])
+#      for name in sorted(flattened_context_features)
+#  ]
+#  example_input = [
+#      tf.keras.layers.Flatten()(flattened_example_features[name])
+#      for name in sorted(flattened_example_features)
+#  ]
+#  input_layer = tf.concat(context_input + example_input, 1)
+#  dnn = tf.keras.Sequential()
+#  if hparams['use_batch_norm']:
+#    dnn.add(
+#        tf.keras.layers.BatchNormalization(
+#            momentum=hparams['batch_norm_moment']))
+#  for layer_size in hparams['hidden_layer_dims']:
+#    dnn.add(tf.keras.layers.Dense(units=layer_size))
+#    if hparams['use_batch_norm']:
+#      dnn.add(tf.keras.layers.BatchNormalization(
+#          momentum=hparams['batch_norm_moment']))
+#    dnn.add(tf.keras.layers.Activation(activation=tf.nn.relu))
+#    dnn.add(tf.keras.layers.Dropout(rate=hparams['dropout_rate']))
 
-  dnn.add(tf.keras.layers.Dense(units=1))
+#  dnn.add(tf.keras.layers.Dense(units=1))
 
   # Since argspec inspection is expensive, for keras layer,
   # layer_obj._call_spec.arg_names is a property that uses cached argspec for
   # call. We use this to determine whether the layer expects `inputs` as first
   # argument.
-  restore_list = tfr.keras.layers.RestoreList()
+#  restore_list = tfr.keras.layers.RestoreList()
 
   # TODO(kathywu): remove the except branch once changes to the call function
   # args in the Keras Layer have been released.
-  try:
-    first_arg_name = flatten_list._call_spec.arg_names[0]  # pylint: disable=protected-access
-  except AttributeError:
-    first_arg_name = flatten_list._call_fn_args[0]  # pylint: disable=protected-access
-  if first_arg_name == 'inputs':
-    logits = restore_list(inputs=(dnn(input_layer), mask))
-  else:
-    logits = restore_list(dnn(input_layer), mask)
+#  try:
+#    first_arg_name = flatten_list._call_spec.arg_names[0]  # pylint: disable=protected-access
+#  except AttributeError:
+#    first_arg_name = flatten_list._call_fn_args[0]  # pylint: disable=protected-access
+#  if first_arg_name == 'inputs':
+#    logits = restore_list(inputs=(dnn(input_layer), mask))
+#  else:
+#    logits = restore_list(dnn(input_layer), mask)
 
-  model = tf.keras.Model(
-      inputs={
-          **context_keras_inputs,
-          **example_keras_inputs
-      },
-      outputs=logits,
-      name='dnn_ranking_model')
-  model.compile(
-      optimizer=tf.keras.optimizers.Adagrad(
-          learning_rate=hparams['learning_rate']),
-      loss=tfr.keras.losses.get(hparams['loss']),
-      metrics=tfr.keras.metrics.default_keras_metrics())
-  return model
+#  model = tf.keras.Model(
+#      inputs={
+#          **context_keras_inputs,
+#          **example_keras_inputs
+#      },
+#      outputs=logits,
+#      name='dnn_ranking_model')
+#  model.compile(
+#      optimizer=tf.keras.optimizers.Adagrad(
+#          learning_rate=hparams['learning_rate']),
+#      loss=tfr.keras.losses.get(hparams['loss']),
+#      metrics=tfr.keras.metrics.default_keras_metrics())
+#  return model
