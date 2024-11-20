@@ -65,6 +65,7 @@ class RankingPipelineTest(tf.test.TestCase):
       execution = tf.io.gfile.listdir(os.path.join(component_path, output))
       self.assertEqual(1, len(execution))
 
+  @pytest.mark.xfail(run=False, reason="This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added."
   def testPipeline(self):
     BeamDagRunner().run(
         ranking_pipeline._create_pipeline(
