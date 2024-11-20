@@ -42,18 +42,18 @@ def make_decoder():
   #    label_feature=label_feature)
 
 
-def preprocessing_fn(inputs):
-  """Transform preprocessing_fn."""
+#def preprocessing_fn(inputs):
+#  """Transform preprocessing_fn."""
 
   # generate a shared vocabulary.
-  _ = tft.vocabulary(
-      tf.concat([
-          inputs[features.QUERY_TOKENS].flat_values,
-          inputs[features.DOCUMENT_TOKENS].flat_values
-      ],
-                axis=0),
-      vocab_filename='shared_vocab')
-  return inputs
+#  _ = tft.vocabulary(
+#      tf.concat([
+#          inputs[features.QUERY_TOKENS].flat_values,
+#          inputs[features.DOCUMENT_TOKENS].flat_values
+#      ],
+#                axis=0),
+#      vocab_filename='shared_vocab')
+#  return inputs
 
 
 def run_fn(trainer_fn_args):
