@@ -16,7 +16,6 @@
 
 import glob
 import os
-import pytest
 
 from absl import logging
 from absl.testing import parameterized
@@ -148,7 +147,6 @@ class ExecutorTest(tf.test.TestCase, parameterized.TestCase):
                       column_for_slicing=['trip_start_day', 'trip_miles']),
               ])),
   }))
-  @pytest.mark.xfail(run=False, reason="EvalSavedModel is deprecated.")
   def testDoLegacySingleEvalSavedModelWFairness(self, exec_properties):
     source_data_dir = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), 'testdata')
@@ -182,8 +180,7 @@ class ExecutorTest(tf.test.TestCase, parameterized.TestCase):
       # post-export metric is registered.  This may raise an ImportError if the
       # currently-installed version of TFMA does not support fairness
       # indicators.
-      # Note: tensorflow_model_analysis.addons is deprecated from 0.47.0.
-      # import tensorflow_model_analysis.addons.fairness.post_export_metrics.fairness_indicators  # noqa: F401
+      import tensorflow_model_analysis.addons.fairness.post_export_metrics.fairness_indicators  # noqa: F401
       exec_properties[
           standard_component_specs
           .FAIRNESS_INDICATOR_THRESHOLDS_KEY] = '[0.1, 0.3, 0.5, 0.7, 0.9]'
