@@ -100,8 +100,7 @@ class Executor(base_beam_executor.BaseBeamExecutor):
           (len(input_dict[standard_component_specs.BASELINE_MODEL_KEY])))
 
     self._log_startup(input_dict, output_dict, exec_properties)
-
-           
+       
     output_uri = artifact_utils.get_single_uri(
         output_dict[constants.EVALUATION_KEY])
 
