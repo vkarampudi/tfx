@@ -172,7 +172,9 @@ examples {
 ]
 
 @pytest.mark.xfail(run=False, reason="This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.")
-@unittest.skipIf('This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.')
+@unittest.skipIf(struct2tensor_parsing_utils is None,
+                 'Cannot import required modules. This can happen when'
+                 ' struct2tensor is not available.')
 class ELWCDecoderTest(tf.test.TestCase):
 
   def testAllDTypes(self):
