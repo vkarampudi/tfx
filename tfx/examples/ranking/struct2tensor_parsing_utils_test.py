@@ -173,7 +173,6 @@ examples {
 
 @pytest.mark.xfail(run=False, reason="This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.")
 @pytest.mark.skipif('This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.', reason="TF Ranking not supported on TensorFlow 2.16")
-def test_function():
 class ELWCDecoderTest(tf.test.TestCase):
 
   def testAllDTypes(self):
