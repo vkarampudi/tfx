@@ -171,5 +171,5 @@ def run_fn(fn_args: tfx.components.FnArgs):
       validation_steps=fn_args.eval_steps,
       callbacks=[tensorboard_callback])
 
-  signatures = base.make_serving_signatures(model, tf_transform_output)
+  # signatures = base.make_serving_signatures(model, tf_transform_output)
   model.save(fn_args.serving_model_dir, 'tf.keras')
