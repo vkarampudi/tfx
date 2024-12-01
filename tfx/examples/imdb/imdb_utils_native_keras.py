@@ -133,7 +133,7 @@ def _build_keras_model() -> keras.Model:
   # Input layer explicitly defined to handle dictionary input
   input_layer = keras.layers.Input(
       shape=(_MAX_LEN,),
-      dtype=tf.float64,
+      dtype=tf.int64,
       name=_transformed_name(_FEATURE_KEY, True))
 
   embedding_layer = keras.layers.Embedding(
