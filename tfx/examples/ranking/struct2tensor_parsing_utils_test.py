@@ -15,8 +15,7 @@
 
 
 
-# import unittest
-import pytest
+import unittest
 
 import tensorflow as tf
 
@@ -171,11 +170,13 @@ examples {
 """, input_pb2.ExampleListWithContext()).SerializeToString()
 ]
 
-@pytest.mark.xfail(run=False, reason="This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.")
-@pytest.mark.skipif('This is due to TF Ranking not supporting TensorFlow 2.16, We should re-enable it when support is added.', reason="TF Ranking not supported on TensorFlow 2.16")
+
+@unittest.skipIf(struct2tensor_parsing_utils is None,
+                 'Cannot import required modules. This can happen when'
+                 ' struct2tensor is not available.')
 class ELWCDecoderTest(tf.test.TestCase):
 
-  def testAllDTypes(self):
+  #def testAllDTypes(self):
   #  context_features = [
   #      struct2tensor_parsing_utils.Feature('ctx.int', tf.int64),
   #      struct2tensor_parsing_utils.Feature('ctx.float', tf.float32),
@@ -205,8 +206,8 @@ class ELWCDecoderTest(tf.test.TestCase):
   #      'example_bytes': [[[b'u', b'v'], [b'w']], [[b'x', b'y', b'z']]],
   #  }
   #  self.assertEqual({k: v.to_list() for k, v in result.items()}, expected)
-     pass
-  def testDefaultFilling(self):
+  
+  # def testDefaultFilling(self):
   #  context_features = [
   #      struct2tensor_parsing_utils.Feature('ctx.bytes', tf.string,
   #                                          default_value=b'g', length=1),
@@ -230,8 +231,8 @@ class ELWCDecoderTest(tf.test.TestCase):
   #      'example_float': [[[11.0, 12.0], [-1.0, -1.0]], [[14.0, 15.0]]],
   #  }
   #  self.assertEqual({k: v.to_list() for k, v in result.items()}, expected)
-     pass
-  def testLabelFeature(self):
+ 
+  # def testLabelFeature(self):
   #  decoder = struct2tensor_parsing_utils.ELWCDecoder(
   #      'test_decoder', [], [],
   #      size_feature_name=None,
@@ -241,12 +242,11 @@ class ELWCDecoderTest(tf.test.TestCase):
 
   #  self.assertLen(result, 1)
   #  self.assertEqual(result['example_int'].to_list(), [[11.0, 22.0], [33.0]])
-     pass
-  def testSizeFeature(self):
+ 
+  # def testSizeFeature(self):
   #  decoder = struct2tensor_parsing_utils.ELWCDecoder(
   #      'test_decoder', [], [],
   #      size_feature_name='example_list_size')
   #  result = decoder.decode_record(tf.convert_to_tensor(_ELWCS))
   #  self.assertLen(result, 1)
   #  self.assertEqual(result['example_list_size'].to_list(), [[2], [1]])
-     pass
