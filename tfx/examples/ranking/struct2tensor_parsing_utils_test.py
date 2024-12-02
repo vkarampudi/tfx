@@ -15,7 +15,7 @@
 
 
 
-import unittest
+# import unittest
 
 import tensorflow as tf
 
@@ -171,11 +171,12 @@ examples {
 ]
 
 
-@unittest.skipIf(struct2tensor_parsing_utils is None,
-                 'Cannot import required modules. This can happen when'
-                 ' struct2tensor is not available.')
+# @unittest.skipIf(struct2tensor_parsing_utils is None,
+#                 'Cannot import required modules. This can happen when'
+#                 ' struct2tensor is not available.')
 class ELWCDecoderTest(tf.test.TestCase):
-
+    pass # Added to prevent syntax error due to an empty class definition
+ 
   #def testAllDTypes(self):
   #  context_features = [
   #      struct2tensor_parsing_utils.Feature('ctx.int', tf.int64),
