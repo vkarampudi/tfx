@@ -206,7 +206,6 @@ class ELWCDecoderTest(tf.test.TestCase):
   #      'example_bytes': [[[b'u', b'v'], [b'w']], [[b'x', b'y', b'z']]],
   #  }
   #  self.assertEqual({k: v.to_list() for k, v in result.items()}, expected)
-  
   # def testDefaultFilling(self):
   #  context_features = [
   #      struct2tensor_parsing_utils.Feature('ctx.bytes', tf.string,
@@ -219,19 +218,16 @@ class ELWCDecoderTest(tf.test.TestCase):
   #  decoder = struct2tensor_parsing_utils.ELWCDecoder(
   #      'test_decoder', context_features, example_features,
   #      size_feature_name=None, label_feature=None)
-
   #  result = decoder.decode_record(tf.convert_to_tensor(_ELWCS))
   #  self.assertLen(result, len(context_features) + len(example_features))
   #  for f in itertools.chain(context_features, example_features):
   #    self.assertIn(f.name, result)
   #    self.assertIsInstance(result[f.name], tf.RaggedTensor)
-
   #  expected = {
   #      'ctx.bytes': [[b'g'], [b'c']],
   #      'example_float': [[[11.0, 12.0], [-1.0, -1.0]], [[14.0, 15.0]]],
   #  }
   #  self.assertEqual({k: v.to_list() for k, v in result.items()}, expected)
- 
   # def testLabelFeature(self):
   #  decoder = struct2tensor_parsing_utils.ELWCDecoder(
   #      'test_decoder', [], [],
@@ -242,7 +238,6 @@ class ELWCDecoderTest(tf.test.TestCase):
 
   #  self.assertLen(result, 1)
   #  self.assertEqual(result['example_int'].to_list(), [[11.0, 22.0], [33.0]])
- 
   # def testSizeFeature(self):
   #  decoder = struct2tensor_parsing_utils.ELWCDecoder(
   #      'test_decoder', [], [],
