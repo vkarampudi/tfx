@@ -170,7 +170,7 @@ tf-keras==2.16.0
 keras-tuner==1.4.7
 kfp==2.11.0
 kfp-pipeline-spec==0.6.0
-kfp-server-api==2.0.5
+kfp-server-api==2.2.0
 kt-legacy==1.0.5
 kubernetes==26.1.0
 lazy-object-proxy==1.10.0
