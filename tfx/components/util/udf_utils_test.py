@@ -41,7 +41,7 @@ class _MyComponentSpec(component_spec.ComponentSpec):
   OUTPUTS = {}
 
 
-class _MyComponent(base_component.BaseComponent):
+class MyComponent(base_component.BaseComponent):
   SPEC_CLASS = _MyComponentSpec
   EXECUTOR_SPEC = executor_spec.BeamExecutorSpec(base_executor.BaseExecutor)
 
