@@ -963,14 +963,12 @@ class MakeProtoPlaceholderTest(tf.test.TestCase):
               number: 1
               label: LABEL_OPTIONAL
               type: TYPE_STRING
-              json_name: "typeUrl"
             }
             field {
               name: "value"
               number: 2
               label: LABEL_OPTIONAL
               type: TYPE_BYTES
-              json_name: "value"
             }
           }
           syntax: "proto3"
@@ -1254,14 +1252,12 @@ class MakeProtoPlaceholderTest(tf.test.TestCase):
               number: 1
               label: LABEL_OPTIONAL
               type: TYPE_STRING
-              json_name: "typeUrl"
             }
             field {
               name: "value"
               number: 2
               label: LABEL_OPTIONAL
               type: TYPE_BYTES
-              json_name: "value"
             }
           }
           syntax: "proto3"
