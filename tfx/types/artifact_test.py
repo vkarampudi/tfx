@@ -14,23 +14,22 @@
 """Tests for tfx.types.artifact."""
 
 import gc
-import json
 import importlib
-import pytest
+import json
 import textwrap
 from unittest import mock
 
 from absl import logging
+from google.protobuf import json_format
+from google.protobuf import struct_pb2
+from google.protobuf import text_format
+from ml_metadata.proto import metadata_store_pb2
+import pytest
 import tensorflow as tf
 from tfx.types import artifact
 from tfx.types import system_artifacts
 from tfx.types import value_artifact
 from tfx.utils import json_utils
-
-from google.protobuf import json_format
-from google.protobuf import struct_pb2
-from google.protobuf import text_format
-from ml_metadata.proto import metadata_store_pb2
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -176,7 +175,7 @@ class ArtifactTest(tf.test.TestCase):
       new_proto2.CopyFrom(proto2)
       return super().assertProtoEquals(proto1, new_proto2)
     return super().assertProtoEquals(proto1, proto2)
-    
+
   def assertArtifactString(self, expected_artifact_text, expected_artifact_type_text, actual_instance):
     expected_artifact_text = textwrap.dedent(expected_artifact_text)
     expected_artifact_type_text = textwrap.dedent(expected_artifact_type_text)
@@ -187,7 +186,6 @@ class ArtifactTest(tf.test.TestCase):
     expected_text = 'Artifact(artifact: {}, artifact_type: {})'.format(
         str(expected_artifact), str(expected_artifact_type))
     self.assertEqual(expected_text, str(actual_instance))
-        
 
   def testArtifact(self):
      instance = _MyArtifact()
@@ -1413,7 +1411,6 @@ class ArtifactTest(tf.test.TestCase):
           value: STRING
         }"""
     self.assertArtifactString(expected_artifact_text, expected_artifact_type_text, my_artifact)
-    
     copied_artifact = _MyArtifact2()
     copied_artifact.set_mlmd_artifact(my_artifact.mlmd_artifact)
 
