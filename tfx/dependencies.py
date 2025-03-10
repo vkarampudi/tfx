@@ -191,7 +191,6 @@ def make_extra_packages_tflite_support():
         "flatbuffers>=1.12",
         # "tflite-support>=0.4.3,<0.4.5",
     ]
-  
 
 def make_extra_packages_tf_ranking():
     # Packages needed for tf-ranking which is used in tfx/examples/ranking.
