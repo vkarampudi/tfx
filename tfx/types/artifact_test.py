@@ -190,8 +190,6 @@ class ArtifactTest(tf.test.TestCase):
   
   def testArtifact(self):
      instance = _MyArtifact()
-  def testArtifact(self):
-    instance = _MyArtifact()
 
     # Test property getters.
     self.assertEqual('', instance.uri)
