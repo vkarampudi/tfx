@@ -189,7 +189,7 @@ class ArtifactTest(tf.test.TestCase):
     self.assertEqual(expected_text, str(actual_instance))
   
   def testArtifact(self):
-     instance = _MyArtifact()
+    instance = _MyArtifact()
 
     # Test property getters.
     self.assertEqual('', instance.uri)
