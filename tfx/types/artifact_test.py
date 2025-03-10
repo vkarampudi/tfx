@@ -176,7 +176,7 @@ class ArtifactTest(tf.test.TestCase):
       new_proto2.CopyFrom(proto2)
       return super().assertProtoEquals(proto1, new_proto2)
     return super().assertProtoEquals(proto1, proto2)
-    
+
   def assertArtifactString(self, expected_artifact_text, expected_artifact_type_text, actual_instance):
     expected_artifact_text = textwrap.dedent(expected_artifact_text)
     expected_artifact_type_text = textwrap.dedent(expected_artifact_type_text)
@@ -187,8 +187,7 @@ class ArtifactTest(tf.test.TestCase):
     expected_text = 'Artifact(artifact: {}, artifact_type: {})'.format(
         str(expected_artifact), str(expected_artifact_type))
     self.assertEqual(expected_text, str(actual_instance))
-        
-
+  
   def testArtifact(self):
      instance = _MyArtifact()
   def testArtifact(self):
@@ -1413,7 +1412,6 @@ class ArtifactTest(tf.test.TestCase):
           value: STRING
         }"""
     self.assertArtifactString(expected_artifact_text, expected_artifact_type_text, my_artifact)
-    
     copied_artifact = _MyArtifact2()
     copied_artifact.set_mlmd_artifact(my_artifact.mlmd_artifact)
 
