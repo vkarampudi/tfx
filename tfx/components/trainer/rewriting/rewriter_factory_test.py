@@ -38,7 +38,6 @@ class RewriterFactoryTest(parameterized.TestCase):
  #   self.assertTrue(tfrw)
  #   self.assertEqual(type(tfrw).__name__, rewriter_name)
  #   self.assertEqual(tfrw.name, 'my_rewriter')
-  
   @unittest.skipUnless(_tfjs_installed(), 'tensorflowjs is not installed')
   def testRewriterFactorySuccessfullyCreatedTFJSRewriter(self):
     tfrw = rewriter_factory.create_rewriter(rewriter_factory.TFJS_REWRITER,
