@@ -32,7 +32,7 @@ from tfx.types import value_artifact
 from tfx.utils import json_utils
 
 
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(scope='module', autouse=True)
 def cleanup():
   yield
   importlib.reload(struct_pb2)
@@ -176,7 +176,9 @@ class ArtifactTest(tf.test.TestCase):
       return super().assertProtoEquals(proto1, new_proto2)
     return super().assertProtoEquals(proto1, proto2)
 
-  def assertArtifactString(self, expected_artifact_text, expected_artifact_type_text, actual_instance):
+  def assertArtifactString(
+      self, expected_artifact_text, expected_artifact_type_text, actual_instance
+  ):
     expected_artifact_text = textwrap.dedent(expected_artifact_text)
     expected_artifact_type_text = textwrap.dedent(expected_artifact_type_text)
     expected_artifact = metadata_store_pb2.Artifact()
@@ -184,11 +186,10 @@ class ArtifactTest(tf.test.TestCase):
     expected_artifact_type = metadata_store_pb2.ArtifactType()
     text_format.Parse(expected_artifact_type_text, expected_artifact_type)
     expected_text = 'Artifact(artifact: {}, artifact_type: {})'.format(
-        str(expected_artifact), str(expected_artifact_type))
+        str(expected_artifact), str(expected_artifact_type)
+    )
     self.assertEqual(expected_text, str(actual_instance))
 
-  def testArtifact(self):
-     instance = _MyArtifact()
   def testArtifact(self):
     instance = _MyArtifact()
 
@@ -346,7 +347,9 @@ class ArtifactTest(tf.test.TestCase):
           key: "string2"
           value: STRING
         }"""
-    self.assertArtifactString(expected_artifact_text, expected_artifact_type_text, instance)
+    self.assertArtifactString(
+        expected_artifact_text, expected_artifact_type_text, instance
+    )
 
     # Test json serialization.
     json_dict = json_utils.dumps(instance)
@@ -665,7 +668,9 @@ class ArtifactTest(tf.test.TestCase):
           value: STRING
         }
         )"""
-    self.assertArtifactString(expected_artifact_text, expected_artifact_type_text, my_artifact)
+    self.assertArtifactString(
+        expected_artifact_text, expected_artifact_type_text, my_artifact
+    )
 
     # Test json serialization.
     json_dict = json_utils.dumps(my_artifact)
@@ -708,8 +713,9 @@ class ArtifactTest(tf.test.TestCase):
       self.assertEqual(my_artifact.string1, '111')
       self.assertEqual(my_artifact.string2, '222')
       self.assertEqual(my_artifact.bool1, True)
-      self.assertProtoEquals(my_artifact.proto1,
-                             struct_pb2.Value(string_value='pb1'))
+      self.assertProtoEquals(
+          my_artifact.proto1, struct_pb2.Value(string_value='pb1')
+      )
       self.assertProtoEquals(my_artifact.proto2, struct_pb2.Value(null_value=0))
 
   def testArtifactJsonValue(self):
@@ -738,12 +744,14 @@ class ArtifactTest(tf.test.TestCase):
     self.assertIsNone(my_artifact.jsonvalue_null)
     self.assertEmpty(my_artifact.get_json_value_custom_property('customjson1'))
     self.assertEqual(
-        my_artifact.get_json_value_custom_property('customjson2'),
-        ['a', 'b', 3])
+        my_artifact.get_json_value_custom_property('customjson2'), ['a', 'b', 3]
+    )
     self.assertEqual(
-        my_artifact.get_json_value_custom_property('customjson3'), 'xyz')
+        my_artifact.get_json_value_custom_property('customjson3'), 'xyz'
+    )
     self.assertEqual(
-        my_artifact.get_json_value_custom_property('customjson4'), 3.14)
+        my_artifact.get_json_value_custom_property('customjson4'), 3.14
+    )
     self.assertEqual(
         my_artifact.get_json_value_custom_property('customjson5'), False
     )
@@ -917,73 +925,6 @@ class ArtifactTest(tf.test.TestCase):
             }
           }
         }"""
-    expected_artifact_type_text = """\
-        name: "MyTypeName2"
-        properties {
-          key: "bool1"
-          value: BOOLEAN
-        }
-        properties {
-          key: "float1"
-          value: DOUBLE
-        }
-        properties {
-          key: "float2"
-          value: DOUBLE
-        }
-        properties {
-          key: "int1"
-          value: INT
-        }
-        properties {
-          key: "int2"
-          value: INT
-        }
-        properties {
-          key: "jsonvalue_dict"
-          value: STRUCT
-        }
-        properties {
-          key: "jsonvalue_empty"
-          value: STRUCT
-        }
-        properties {
-          key: "jsonvalue_float"
-          value: STRUCT
-        }
-        properties {
-          key: "jsonvalue_int"
-          value: STRUCT
-        }
-        properties {
-          key: "jsonvalue_list"
-          value: STRUCT
-        }
-        properties {
-          key: "jsonvalue_null"
-          value: STRUCT
-        }
-        properties {
-          key: "jsonvalue_string"
-          value: STRUCT
-        }
-        properties {
-          key: "proto1"
-          value: PROTO
-        }
-        properties {
-          key: "proto2"
-          value: PROTO
-        }
-        properties {
-          key: "string1"
-          value: STRING
-        }
-        properties {
-          key: "string2"
-          value: STRING
-        }
-        )"""
 
     copied_artifact = _MyArtifact2()
     copied_artifact.set_mlmd_artifact(my_artifact.mlmd_artifact)
@@ -1299,7 +1240,9 @@ class ArtifactTest(tf.test.TestCase):
           key: "string2"
           value: STRING
         }"""
-    self.assertArtifactString(expected_artifact_text, expected_artifact_type_text, copied_artifact)
+    self.assertArtifactString(
+        expected_artifact_text, expected_artifact_type_text, copied_artifact
+    )
 
   def testArtifactProtoValue(self):
     # Construct artifact.
@@ -1410,7 +1353,10 @@ class ArtifactTest(tf.test.TestCase):
           key: "string2"
           value: STRING
         }"""
-    self.assertArtifactString(expected_artifact_text, expected_artifact_type_text, my_artifact)
+    self.assertArtifactString(
+        expected_artifact_text, expected_artifact_type_text, my_artifact
+    )
+
     copied_artifact = _MyArtifact2()
     copied_artifact.set_mlmd_artifact(my_artifact.mlmd_artifact)
 
@@ -1512,7 +1458,9 @@ class ArtifactTest(tf.test.TestCase):
           key: "string2"
           value: STRING
         }"""
-    self.assertArtifactString(expected_artifact_text, expected_artifact_type_text, copied_artifact)
+    self.assertArtifactString(
+        expected_artifact_text, expected_artifact_type_text, copied_artifact
+    )
 
   def testInvalidArtifact(self):
     with self.assertRaisesRegex(
@@ -1709,6 +1657,7 @@ class ArtifactTest(tf.test.TestCase):
                      metadata_store_pb2.ArtifactType.DATASET)
 
   def testInvalidTypeAnnotation(self):
+
     class _ArtifactWithInvalidAnnotation(artifact.Artifact):
       TYPE_NAME = 'InvalidAnnotationArtifact'
       TYPE_ANNOTATION = artifact.Artifact
