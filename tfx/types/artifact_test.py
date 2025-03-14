@@ -398,237 +398,238 @@ class ArtifactTest(tf.test.TestCase):
 
     # Test string and proto serialization.
     expected_artifact_text = """\
-        Artifact(artifact: properties {
-          key: "jsonvalue_dict"
-          value {
-            struct_value {
-              fields {
-                key: "k1"
-                value {
-                  list_value {
-                    values {
-                      string_value: "v1"
-                    }
-                    values {
-                      string_value: "v2"
-                    }
-                    values {
-                      number_value: 333.0
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
         properties {
-          key: "jsonvalue_float"
-          value {
-            struct_value {
-              fields {
-                key: "__value__"
-                value {
-                  number_value: 3.14
-                }
-              }
-            }
-          }
-        }
-        properties {
-          key: "jsonvalue_int"
-          value {
-            struct_value {
-              fields {
-                key: "__value__"
-                value {
-                  number_value: 123.0
-                }
-              }
-            }
-          }
-        }
-        properties {
-          key: "jsonvalue_list"
-          value {
-            struct_value {
-              fields {
-                key: "__value__"
-                value {
-                  list_value {
-                    values {
-                      string_value: "a1"
-                    }
-                    values {
-                      string_value: "2"
-                    }
-                    values {
-                      number_value: 3.0
-                    }
-                    values {
-                      struct_value {
-                        fields {
-                          key: "4"
-                          value {
-                            number_value: 5.0
-                          }
+            key: "jsonvalue_dict"
+            value {
+                struct_value {
+                    fields {
+                        key: "k1"
+                        value {
+                            list_value {
+                                values {
+                                    string_value: "v1"
+                                }
+                                values {
+                                    string_value: "v2"
+                                }
+                                values {
+                                    number_value: 333.0
+                                }
+                            }
                         }
-                      }
                     }
-                  }
                 }
-              }
             }
-          }
         }
         properties {
-          key: "jsonvalue_string"
-          value {
-            struct_value {
-              fields {
-                key: "__value__"
-                value {
-                  string_value: "aaa"
-                }
-              }
-            }
-          }
-        }
-        custom_properties {
-          key: "customjson1"
-          value {
-            struct_value {
-            }
-          }
-        }
-        custom_properties {
-          key: "customjson2"
-          value {
-            struct_value {
-              fields {
-                key: "__value__"
-                value {
-                  list_value {
-                    values {
-                      string_value: "a"
+            key: "jsonvalue_float"
+            value {
+                struct_value {
+                    fields {
+                        key: "__value__"
+                        value {
+                            number_value: 3.14
+                        }
                     }
-                    values {
-                      string_value: "b"
+                }
+            }
+        }
+        properties {
+            key: "jsonvalue_int"
+            value {
+                struct_value {
+                    fields {
+                        key: "__value__"
+                        value {
+                            number_value: 123.0
+                        }
                     }
-                    values {
-                      number_value: 3.0
+                }
+            }
+        }
+        properties {
+            key: "jsonvalue_list"
+            value {
+                struct_value {
+                    fields {
+                        key: "__value__"
+                        value {
+                            list_value {
+                                values {
+                                    string_value: "a1"
+                                }
+                                values {
+                                    string_value: "2"
+                                }
+                                values {
+                                    number_value: 3.0
+                                }
+                                values {
+                                    struct_value {
+                                        fields {
+                                            key: "4"
+                                            value {
+                                                number_value: 5.0
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
             }
-          }
+        }
+        properties {
+            key: "jsonvalue_string"
+            value {
+                struct_value {
+                    fields {
+                        key: "__value__"
+                        value {
+                            string_value: "aaa"
+                        }
+                    }
+                }
+            }
         }
         custom_properties {
-          key: "customjson3"
-          value {
-            struct_value {
-              fields {
-                key: "__value__"
-                value {
-                  string_value: "xyz"
+            key: "customjson1"
+            value {
+                struct_value {
                 }
-              }
             }
-          }
         }
         custom_properties {
-          key: "customjson4"
-          value {
-            struct_value {
-              fields {
-                key: "__value__"
-                value {
-                  number_value: 3.14
+            key: "customjson2"
+            value {
+                struct_value {
+                    fields {
+                        key: "__value__"
+                        value {
+                            list_value {
+                                values {
+                                    string_value: "a"
+                                }
+                                values {
+                                    string_value: "b"
+                                }
+                                values {
+                                    number_value: 3.0
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
         custom_properties {
-          key: "customjson5"
-          value {
-            struct_value {
-              fields {
-                key: "__value__"
-                value {
-                  bool_value: false
+            key: "customjson3"
+            value {
+                struct_value {
+                    fields {
+                        key: "__value__"
+                        value {
+                            string_value: "xyz"
+                        }
+                    }
                 }
-              }
             }
-          }
-        }"""
+        }
+        custom_properties {
+            key: "customjson4"
+            value {
+                struct_value {
+                    fields {
+                        key: "__value__"
+                        value {
+                            number_value: 3.14
+                        }
+                    }
+                }
+            }
+        }
+        custom_properties {
+            key: "customjson5"
+            value {
+                struct_value {
+                    fields {
+                        key: "__value__"
+                        value {
+                            bool_value: false
+                        }
+                    }
+                }
+            }
+        }
+    """
     expected_artifact_type_text = """\
         name: "MyTypeName2"
         properties {
-          key: "bool1"
-          value: BOOLEAN
+            key: "bool1"
+            value: BOOLEAN
         }
         properties {
-          key: "float1"
-          value: DOUBLE
+            key: "float1"
+            value: DOUBLE
         }
         properties {
-          key: "float2"
-          value: DOUBLE
+            key: "float2"
+            value: DOUBLE
         }
         properties {
-          key: "int1"
-          value: INT
+            key: "int1"
+            value: INT
         }
         properties {
-          key: "int2"
-          value: INT
+            key: "int2"
+            value: INT
         }
         properties {
-          key: "jsonvalue_dict"
-          value: STRUCT
+            key: "jsonvalue_dict"
+            value: STRUCT
         }
         properties {
-          key: "jsonvalue_empty"
-          value: STRUCT
+            key: "jsonvalue_empty"
+            value: STRUCT
         }
         properties {
-          key: "jsonvalue_float"
-          value: STRUCT
+            key: "jsonvalue_float"
+            value: STRUCT
         }
         properties {
-          key: "jsonvalue_int"
-          value: STRUCT
+            key: "jsonvalue_int"
+            value: STRUCT
         }
         properties {
-          key: "jsonvalue_list"
-          value: STRUCT
+            key: "jsonvalue_list"
+            value: STRUCT
         }
         properties {
-          key: "jsonvalue_null"
-          value: STRUCT
+            key: "jsonvalue_null"
+            value: STRUCT
         }
         properties {
-          key: "jsonvalue_string"
-          value: STRUCT
+            key: "jsonvalue_string"
+            value: STRUCT
         }
         properties {
-          key: "proto1"
-          value: PROTO
+            key: "proto1"
+            value: PROTO
         }
         properties {
-          key: "proto2"
-          value: PROTO
+            key: "proto2"
+            value: PROTO
         }
         properties {
-          key: "string1"
-          value: STRING
-         }
-        properties {
-          key: "string2"
-          value: STRING
+            key: "string1"
+            value: STRING
         }
-        )"""
+        properties {
+            key: "string2"
+            value: STRING
+        }
+    """
     self.assertArtifactString(
         expected_artifact_text, expected_artifact_type_text, my_artifact
     )
