@@ -16,6 +16,17 @@
 import os
 os.environ['TEMPORARILY_DISABLE_PROTOBUF_VERSION_CHECK'] = 'true'
 
+# Prevent library thread pool and gRPC fork deadlocks on macOS (especially Apple Silicon)
+import sys
+if sys.platform == 'darwin':
+  os.environ.setdefault('GRPC_ENABLE_FORK_SUPPORT', 'false')
+  os.environ.setdefault('OBJC_DISABLE_INITIALIZE_FORK_SAFETY', 'YES')
+  os.environ.setdefault('OMP_NUM_THREADS', '1')
+  os.environ.setdefault('MKL_NUM_THREADS', '1')
+  os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
+  os.environ.setdefault('VECLIB_MAXIMUM_THREADS', '1')
+  os.environ.setdefault('NUMEXPR_NUM_THREADS', '1')
+
 # `tfx` is a namespace package.
 # https://packaging.python.org/guides/packaging-namespace-packages/#pkgutil-style-namespace-packages
 __path__ = __import__('pkgutil').extend_path(__path__, __name__)
